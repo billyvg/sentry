@@ -2,7 +2,7 @@ import React from 'react';
 import {mount, shallow} from 'enzyme';
 import AlertLink from 'app/components/alertLink';
 
-describe('AlertLink', function() {
+describe.only('AlertLink', function() {
   it('renders', function() {
     let wrapper = shallow(
       <AlertLink to="/settings/accounts/notifications">
