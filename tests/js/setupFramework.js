@@ -30,40 +30,39 @@ MockApiClient.addMockResponse({
   url: '/internal/health/',
   body: {},
 });
-const client = puppeteer.launch();
+// const client = puppeteer.launch();
+// console.log('launch pup');
 
 expect.extend({
   async toSnapshot(received, argument) {
-    // received = enzyme wrapper
-    // ReactDOM.render(received, document.body);
-    // console.log(sprite.stringify());
-    const cloned = document.documentElement.cloneNode(true);
-    // console.log('cloned', cloned);
-    const body = cloned.getElementsByTagName('body').item(0);
-    body.innerHTML = received.html();
-    await client
-      .then(async browser => {
-        const page = await browser.newPage();
-        page.setViewport({width: 1200, height: 600, deviceScaleFactor: 4});
-        await page.setContent(cloned.outerHTML);
-        const fs = require('fs');
-        const css = fs
-          .readFileSync('./static/dist/sentry.css', 'utf8')
-          .replace(/[\r\n]+/g, '');
-        page.addStyleTag({
-          content: css,
-        });
-        console.log(this);
-        await page.screenshot({
-          path: `./.artifacts/jest/${slugify(this.currentTestName)}.png`,
-          fullPage: true,
-        });
-        // expect(image).toMatchImageSnapshot();
-        page.close();
-      })
-      .catch(err => {
-        console.error(err);
+    try {
+      // received = enzyme wrapper
+      // ReactDOM.render(received, document.body);
+      // console.log(sprite.stringify());
+      const cloned = document.documentElement.cloneNode(true);
+      // console.log('cloned', cloned);
+      const body = cloned.getElementsByTagName('body').item(0);
+      body.innerHTML = received.html();
+      const page = await global.__BROWSER__.newPage();
+      page.setViewport({width: 1200, height: 600, deviceScaleFactor: 4});
+      await page.setContent(cloned.outerHTML);
+      const fs = require('fs');
+      const css = fs
+        .readFileSync('./static/dist/sentry.css', 'utf8')
+        .replace(/[\r\n]+/g, '');
+      page.addStyleTag({
+        content: css,
       });
+      console.log(this);
+      await page.screenshot({
+        path: `./.artifacts/jest/${slugify(this.currentTestName)}.png`,
+        fullPage: true,
+      });
+      // expect(image).toMatchImageSnapshot();
+      page.close();
+    } catch (err) {
+      console.error(err);
+    }
     // console.log(cloned.outerHTML);
     return {
       message: () => 'expected to save snapshot',

@@ -134,6 +134,8 @@
       "<rootDir>/tests/js/setup.js"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/tests/js/setupFramework.js",
+		"globalSetup": "<rootDir>/tests/js/psetup.js",
+		"globalTeardown": "<rootDir>/tests/js/pteardown.js",
     "testMatch": [
       "<rootDir>/tests/js/**/?(*.)(spec|test).js?(x)"
     ],
