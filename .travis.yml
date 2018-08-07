@@ -214,7 +214,7 @@ matrix:
 notifications:
   webhooks:
     urls:
-      - https://89ddf9cc.ngrok.io/hooks/c4d1923e-99d8-11e8-8444-dca90482d2f5/public/provider/travis/webhook
+      - https://89ddf9cc.ngrok.io/hooks/2eafa3ca-99f8-11e8-b76e-dca90482d2f5/public/provider/travis/webhook
     on_success: always
     on_failure: always
     on_start: always
