@@ -44,7 +44,6 @@ script:
   # since those steps execute after travis runs `store build cache`
   - pip install codecov
   - npm install -g @zeus-ci/cli
-  - npm install -g menrva-cli
 
 after_success:
   - codecov -e TEST_SUITE
@@ -53,7 +52,6 @@ after_failure:
   - dmesg | tail -n 100
 
 after_script:
-  - menrva-cli upload .artifacts/jest/*.png
   # - zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
   # - zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
   # - zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
