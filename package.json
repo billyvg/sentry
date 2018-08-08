@@ -95,7 +95,7 @@
   "proxyURL": "http://localhost:8000",
   "scripts": {
     "test": "node scripts/test.js",
-    "test-ci": "yarn test --runInBand --ci --coverage --testResultsProcessor=jest-junit",
+    "test-ci": "yarn jest --runInBand --ci --testResultsProcessor=jest-junit tests/js/spec/components/alertLink.spec.jsx",
     "test-debug": "node --inspect-brk scripts/test.js --runInBand",
     "test-staged": "yarn test --findRelatedTests $(git diff --name-only --cached)",
     "lint": "node_modules/.bin/eslint tests/js src/sentry/static/sentry/app --ext .js,.jsx",
@@ -136,6 +136,7 @@
     "setupTestFrameworkScriptFile": "<rootDir>/tests/js/setupFramework.js",
 		"globalSetup": "<rootDir>/tests/js/psetup.js",
 		"globalTeardown": "<rootDir>/tests/js/pteardown.js",
+		"testEnvironment": "<rootDir>/tests/js/penv.js",
     "testMatch": [
       "<rootDir>/tests/js/**/?(*.)(spec|test).js?(x)"
     ],
