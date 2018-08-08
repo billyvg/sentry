@@ -178,7 +178,7 @@
     "jest-image-snapshot": "^2.4.1",
     "jest-junit": "^3.4.1",
     "jest-preset-menrva": "1.0.15",
-    "menrva-client": "1.0.17",
+    "menrva-client": "1.0.19",
     "mockdate": "2.0.2",
     "prettier": "1.7.4",
     "puppeteer": "1.6.2",
