@@ -44,6 +44,7 @@ script:
   # since those steps execute after travis runs `store build cache`
   - pip install codecov
   - npm install -g @zeus-ci/cli
+  - npm install -g menrva-cli
 
 after_success:
   - codecov -e TEST_SUITE
@@ -52,14 +53,15 @@ after_failure:
   - dmesg | tail -n 100
 
 after_script:
-  - zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
-  - zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
-  - zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
-  - zeus upload -t "text/html+pytest" .artifacts/*pytest.html
-  - zeus upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log
-  - zeus upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml
-  - zeus upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json
-  - zeus upload -t "application/image+snapshot" .artifacts/jest/*.png
+  - menrva upload .artifacts/jest/*.png
+  # - zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
+  # - zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
+  # - zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
+  # - zeus upload -t "text/html+pytest" .artifacts/*pytest.html
+  # - zeus upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log
+  # - zeus upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml
+  # - zeus upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json
+  # - zeus upload -t "application/image+snapshot" .artifacts/jest/*.png
 
 # each job in the matrix inherits `env/global` and uses everything above,
 # but custom `services`, `before_install`, `install`, and `before_script` directives
