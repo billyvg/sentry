@@ -53,7 +53,7 @@ after_failure:
   - dmesg | tail -n 100
 
 after_script:
-  - menrva upload .artifacts/jest/*.png
+  - menrva-cli upload .artifacts/jest/*.png
   # - zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
   # - zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
   # - zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
