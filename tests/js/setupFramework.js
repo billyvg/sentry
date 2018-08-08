@@ -1,4 +1,5 @@
 /* global process __dirname */
+// eslint-disable-next-line
 import path from 'path';
 
 import slugify from '@sindresorhus/slugify';
@@ -37,13 +38,6 @@ MockApiClient.addMockResponse({
 
 expect.extend({
   async toSnapshot(received, argument) {
-    if (!process.env.MENRVA_TOKEN) {
-      return {
-        message: () => 'expected to save snapshot',
-        pass: true,
-      };
-    }
-
     try {
       // received = enzyme wrapper
       // ReactDOM.render(received, document.body);
@@ -52,6 +46,7 @@ expect.extend({
       // console.log('cloned', cloned);
       const body = cloned.getElementsByTagName('body').item(0);
       body.innerHTML = received.html();
+      // eslint-disable-next-line
       const page = global.page;
       await page.setContent(cloned.outerHTML);
       // eslint-disable-next-line
@@ -70,6 +65,13 @@ expect.extend({
         path: filePath,
         fullPage: true,
       });
+
+      if (!process.env.MENRVA_TOKEN) {
+        return {
+          message: () => 'expected to save snapshot',
+          pass: true,
+        };
+      }
       console.log('uploading ', filePath);
       menrva.upload({
         files: [filePath],
