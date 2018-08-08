@@ -1,8 +1,8 @@
-/* global process */
+/* global process __dirname */
 import path from 'path';
 
 import slugify from '@sindresorhus/slugify';
-import puppeteer from 'puppeteer';
+import menrva from 'menrva-client/travis';
 
 import React from 'react';
 import {mount} from 'enzyme';
@@ -37,6 +37,13 @@ MockApiClient.addMockResponse({
 
 expect.extend({
   async toSnapshot(received, argument) {
+    if (!process.env.MENRVA_TOKEN) {
+      return {
+        message: () => 'expected to save snapshot',
+        pass: true,
+      };
+    }
+
     try {
       // received = enzyme wrapper
       // ReactDOM.render(received, document.body);
@@ -45,8 +52,9 @@ expect.extend({
       // console.log('cloned', cloned);
       const body = cloned.getElementsByTagName('body').item(0);
       body.innerHTML = received.html();
-      const page = await global.__BROWSER__;
+      const page = global.page;
       await page.setContent(cloned.outerHTML);
+      // eslint-disable-next-line
       const fs = require('fs');
       const css = fs
         .readFileSync(
@@ -57,11 +65,17 @@ expect.extend({
       page.addStyleTag({
         content: css,
       });
+      const filePath = `./.artifacts/jest/${slugify(this.currentTestName)}.png`;
       await page.screenshot({
-        path: `./.artifacts/jest/${slugify(this.currentTestName)}.png`,
+        path: filePath,
         fullPage: true,
       });
-      page.close();
+      console.log('uploading ', filePath);
+      menrva.upload({
+        files: [filePath],
+        job: process.env.TRAVIS_JOB_ID,
+      });
+      // page.close();
     } catch (err) {
       console.error(err);
       throw err;
