@@ -35,6 +35,7 @@ env:
     # node's version is pinned by .nvmrc and is autodetected by `nvm install`.
     - NODE_DIR="${HOME}/.nvm/versions/node/v$(< .nvmrc)"
     - NODE_OPTIONS=--max-old-space-size=4096
+    - CC_TEST_REPORTER_ID=874f7f255b3d7791b4ba2600af66e71ee259547f95a7de7979b8e458b1cb18f2
 
 script:
   # certain commands require sentry init to be run, but this is only true for
@@ -50,11 +51,20 @@ after_failure:
 after_script:
   - |
       coverage_files=$(ls .artifacts/*coverage.xml || true)
-      if [[ -n "$coverage_files" || -f .artifacts/coverage/cobertura-coverage.xml ]]; then
-        pip install -U codecov
-        codecov -e TEST_SUITE
+      if [[ -n "$coverage_files" ]]; then
+        ./cc-test-reporter format-coverage -t coveragepy -o .artifacts/coverage/codeclimate.python.json .artifacts/python.coverage.xml # Format backend coverage
+        ./cc-test-reporter format-coverage -t coveragepy -o .artifacts/coverage/codeclimate.riak.json .artifacts/riak.coverage.xml # Format backend coverage
+        ./cc-test-reporter format-coverage -t coveragepy -o .artifacts/coverage/codeclimate.snuba.json .artifacts/snuba.coverage.xml # Format backend coverage
+        ./cc-test-reporter format-coverage -t coveragepy -o .artifacts/coverage/codeclimate.symbolicator.json .artifacts/symbolicator.coverage.xml # Format backend coverage
+        ./cc-test-reporter format-coverage -t coveragepy -o .artifacts/coverage/codeclimate.acceptance.json .artifacts/acceptance.coverage.xml # Format backend coverage
+      fi
+  - |
+      if [[ -f .artifacts/coverage/lcov.info ]]; then
+        ./cc-test-reporter format-coverage -t lcov -o .artifacts/coverage/codeclimate.frontend.json .artifacts/coverage/lcov.info  # Format frontend coverage
       fi
   - ./bin/yarn global add @zeus-ci/cli
+  - ./cc-test-reporter sum-coverage .artifacts/coverage/codeclimate.*.json -p 2                  # Sum both coverage parts into coverage/codeclimate.json
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi  # Upload coverage/codeclimate.json
   - zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
   - zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
   - zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
@@ -122,6 +132,9 @@ base_acceptance: &acceptance_default
     - rm ~/chromedriver_linux64.zip
     - sudo install -m755 ~/chromedriver /usr/local/bin/
   before_script:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build
     - psql -c 'create database sentry;' -U postgres
 
 
@@ -173,6 +186,10 @@ matrix:
     - python: 2.7
       name: 'Frontend'
       env: TEST_SUITE=js
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
       before_install:
         - find "$NODE_DIR" -type d -empty -delete
         - nvm install
