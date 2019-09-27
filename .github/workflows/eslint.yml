@@ -8,8 +8,8 @@ jobs:
         - name: checkout
           uses: actions/checkout@v1
 
-        - name: yarn install
-          run: yarn install
+        - name: install dev deps
+          run: npm install --only=dev
 
         - name: eslint
           run: npx @neovici/github-actions-eslint-annotator
