@@ -5,14 +5,17 @@ jobs:
       name: eslint
       runs-on: ubuntu-latest
       steps:
-        - name: checkout
-          uses: actions/checkout@v1
+        - uses: actions/checkout@v1
+        - uses: actions/setup-node@v1
+          with:
+            node-version: '10.x'
 
         - name: yarn install
           run: yarn install
 
         - name: eslint
-          run: yarn github-actions-eslint-annotator
+          uses: icrawl/action-eslint@v1
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            PARTIAL_LINTING: true # default: false, only works on PRs
+          with:
+            job-name: eslint
