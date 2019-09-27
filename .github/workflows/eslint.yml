@@ -12,7 +12,7 @@ jobs:
           run: npm install --only=dev
 
         - name: eslint
-          run: npx @neovici/github-actions-eslint-annotator
+          run: yarn github-actions-eslint-annotator
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             PARTIAL_LINTING: true # default: false, only works on PRs
