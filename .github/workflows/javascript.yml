@@ -41,7 +41,7 @@ jobs:
         - name: eslint + fix
           uses: getsentry/action-eslint-fix@08ae3b9
           with:
-            myToken: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # Setup custom tsc matcher, see https://github.com/actions/setup-node/issues/97
         - name: tsc
