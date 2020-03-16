@@ -1,70 +1,70 @@
-import {Link} from 'react-router'
-import {RouteComponentProps} from 'react-router/lib/Router'
-import React from 'react'
-import styled from '@emotion/styled'
-import {css} from '@emotion/core'
+import {Link} from 'react-router';
+import {RouteComponentProps} from 'react-router/lib/Router';
+import React from 'react';
+import styled from '@emotion/styled';
+import {css} from '@emotion/core';
 
-import {Panel, PanelBody, PanelHeader, PanelItem} from 'app/components/panels'
-import {t} from 'app/locale'
-import AsyncView from 'app/views/asyncView'
-import Button from 'app/components/button'
-import Confirm from 'app/components/confirm'
-import EmptyMessage from 'app/views/settings/components/emptyMessage'
-import LoadingIndicator from 'app/components/loadingIndicator'
-import {IconEdit} from 'app/icons/iconEdit'
-import recreateRoute from 'app/utils/recreateRoute'
-import space from 'app/styles/space'
+import {Panel, PanelBody, PanelHeader, PanelItem} from 'app/components/panels';
+import {t} from 'app/locale';
+import AsyncView from 'app/views/asyncView';
+import Button from 'app/components/button';
+import Confirm from 'app/components/confirm';
+import EmptyMessage from 'app/views/settings/components/emptyMessage';
+import LoadingIndicator from 'app/components/loadingIndicator';
+import {IconEdit} from 'app/icons/iconEdit';
+import recreateRoute from 'app/utils/recreateRoute';
+import space from 'app/styles/space';
 
-import {SavedIncidentRule} from './types'
-import {deleteRule} from './actions'
-import getMetricDisplayName from './utils/getMetricDisplayName'
+import {SavedIncidentRule} from './types';
+import {deleteRule} from './actions';
+import getMetricDisplayName from './utils/getMetricDisplayName';
 
 type State = {
-  rules: SavedIncidentRule[]
-} & AsyncView['state']
+  rules: SavedIncidentRule[];
+} & AsyncView['state'];
 
 type RouteParams = {
-  orgId: string
-  projectId: string
-}
+  orgId: string;
+  projectId: string;
+};
 
-type Props = RouteComponentProps<RouteParams, {}>
+type Props = RouteComponentProps<RouteParams, {}>;
 
 class IncidentRulesList extends AsyncView<Props, State> {
   getEndpoints() {
-    const {orgId} = this.props.params
+    const {orgId} = this.props.params;
 
-    return [['rules', `/organizations/${orgId}/alert-rules/`] as [string, string]]
+    return [['rules', `/organizations/${orgId}/alert-rules/`] as [string, string]];
   }
 
   handleRemoveRule = async (rule: SavedIncidentRule) => {
-    const {orgId} = this.props.params
+    const {orgId} = this.props.params;
 
     // Optimistic update
-    const oldRules = this.state.rules.slice(0)
+    const oldRules = this.state.rules.slice(0);
 
-    const newRules = this.state.rules.filter(({id}) => id !== rule.id)
+    const newRules = this.state.rules.filter(({id}) => id !== rule.id);
 
     try {
       this.setState({
         rules: newRules,
-      })
+      });
 
-      await deleteRule(this.api, orgId, rule)
+      await deleteRule(this.api, orgId, rule);
     } catch (_err) {
       this.setState({
         rules: oldRules,
-      })
+      });
     }
-  }
+  };
 
   renderLoading() {
-    return this.renderBody()
+    return this.renderBody();
   }
 
   renderBody() {
-    const isLoading = this.state.loading
-    const isEmpty = !isLoading && !this.state.rules.length
+    const isLoading = this.state.loading;
+    const isEmpty = !isLoading && !this.state.rules.length;
 
     return (
       <Panel>
@@ -82,7 +82,7 @@ class IncidentRulesList extends AsyncView<Props, State> {
           {!isLoading &&
             !isEmpty &&
             this.state.rules.map(rule => {
-              const ruleLink = recreateRoute(`${rule.id}/`, this.props)
+              const ruleLink = recreateRoute(`${rule.id}/`, this.props);
               return (
                 <RuleRow key={rule.id}>
                   <RuleLink to={ruleLink}>{rule.name}</RuleLink>
@@ -116,7 +116,7 @@ class IncidentRulesList extends AsyncView<Props, State> {
                     </Actions>
                   </ThresholdColumn>
                 </RuleRow>
-              )
+              );
             })}
 
           {!isLoading && isEmpty && (
@@ -124,55 +124,55 @@ class IncidentRulesList extends AsyncView<Props, State> {
           )}
         </PanelBody>
       </Panel>
-    )
+    );
   }
 }
 
-export default IncidentRulesList
+export default IncidentRulesList;
 
 const gridCss = css`
   display: grid
   grid-template-columns: 3fr 1fr 2fr
   align-items: center
-`
+`;
 
 const nameColumnCss = css`
-  padding: ${space(2)}
-`
+  padding: ${space(2)};
+`;
 
 const GridPanelHeader = styled(PanelHeader)`
-  padding: 0 ${gridCss}
-`
+  padding: 0 ${gridCss};
+`;
 
 const RuleRow = styled(PanelItem)`
   padding: 0
   align-items: center
   ${gridCss}
-`
+`;
 
 const NameColumn = styled('div')`
   ${nameColumnCss}
-`
+`;
 
 const RuleLink = styled(Link)`
   ${nameColumnCss}
-`
+`;
 
 // For tests
-const MetricName = styled('div')``
+const MetricName = styled('div')``;
 
 const ThresholdColumn = styled('div')`
   display: flex
   align-items: center
   justify-content: space-between
-`
+`;
 
 // For tests
-const Thresholds = styled('div')``
+const Thresholds = styled('div')``;
 
 const Actions = styled('div')`
   display: grid
   grid-auto-flow: column
   grid-gap: ${space(1)}
   margin: ${space(2)}
-`
+`;
