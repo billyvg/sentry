@@ -39,7 +39,7 @@ jobs:
           run: yarn install --frozen-lockfile
 
         - name: eslint + fix
-          uses: getsentry/action-eslint-fix@08ae3b9
+          uses: getsentry/action-eslint-fix@v1
           with:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
