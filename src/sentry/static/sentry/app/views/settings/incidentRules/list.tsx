@@ -97,7 +97,7 @@ class IncidentRulesList extends AsyncView<Props, State> {
                     <Actions>
                       <Button to={ruleLink} size="small" aria-label={t('Edit Rule')}>
                         <IconEdit size="xs" />
-                        &nbsp
+                        &nbsp;
                         {t('Edit')}
                       </Button>
 
@@ -131,9 +131,9 @@ class IncidentRulesList extends AsyncView<Props, State> {
 export default IncidentRulesList;
 
 const gridCss = css`
-  display: grid
-  grid-template-columns: 3fr 1fr 2fr
-  align-items: center
+  display: grid;
+  grid-template-columns: 3fr 1fr 2fr;
+  align-items: center;
 `;
 
 const nameColumnCss = css`
@@ -141,17 +141,18 @@ const nameColumnCss = css`
 `;
 
 const GridPanelHeader = styled(PanelHeader)`
-  padding: 0 ${gridCss};
+  padding: 0;
+  ${gridCss};
 `;
 
 const RuleRow = styled(PanelItem)`
-  padding: 0
-  align-items: center
-  ${gridCss}
+  padding: 0;
+  align-items: center;
+  ${gridCss};
 `;
 
 const NameColumn = styled('div')`
-  ${nameColumnCss}
+  ${nameColumnCss};
 `;
 
 const RuleLink = styled(Link)`
@@ -162,17 +163,17 @@ const RuleLink = styled(Link)`
 const MetricName = styled('div')``;
 
 const ThresholdColumn = styled('div')`
-  display: flex
-  align-items: center
-  justify-content: space-between
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 // For tests
 const Thresholds = styled('div')``;
 
 const Actions = styled('div')`
-  display: grid
-  grid-auto-flow: column
-  grid-gap: ${space(1)}
-  margin: ${space(2)}
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: ${space(1)};
+  margin: ${space(2)};
 `;
