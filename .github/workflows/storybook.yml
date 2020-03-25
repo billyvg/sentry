@@ -52,8 +52,8 @@ jobs:
         - name: Setup bucket
           id: bucket
           run: |
-            echo "::set-output name=branch-name::$(echo ${GITHUB_REF#refs/heads/})"
-            echo "::set-output name=branch-slug::$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]./' '[:lower:]--' | tr -cd '[:alnum:]-_')"
+            echo "::set-output name=branch-name::$(echo ${GITHUB_HEAD_REF#refs/heads/})"
+            echo "::set-output name=branch-slug::$(echo ${GITHUB_HEAD_REF#refs/heads/} | tr '[:upper:]./' '[:lower:]--' | tr -cd '[:alnum:]-_')"
 
         - name: Deploy to gcloud
           env:
