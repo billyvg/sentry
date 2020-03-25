@@ -35,19 +35,13 @@ jobs:
         - name: Install dependencies
           run: yarn install --frozen-lockfile
 
-        - name: Build storybook
-          env:
-            STORYBOOK_BUILD: 1
-          run: |
-            yarn storybook-build
-
         # Setup gcloud CLI
         - name: Setup gcloud CLI
           uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
           with:
             version: '275.0.0'
-            service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-            service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+            service_account_email: ${{ secrets.STORYBOOK_GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+            service_account_key: ${{ secrets.STORYBOOK_GOOGLE_APPLICATION_CREDENTIALS}}
 
         - name: Setup bucket
           id: bucket
@@ -55,9 +49,15 @@ jobs:
             echo "::set-output name=branch-name::$(echo ${GITHUB_HEAD_REF#refs/heads/})"
             echo "::set-output name=branch-slug::$(echo ${GITHUB_HEAD_REF#refs/heads/} | tr '[:upper:]./' '[:lower:]--' | tr -cd '[:alnum:]-_')"
 
+        - name: Build storybook
+          env:
+            STORYBOOK_BUILD: 1
+          run: |
+            yarn storybook-build
+
         - name: Deploy to gcloud
           env:
             STORYBOOK_BRANCH: ${{ steps.bucket.outputs.branch-name }}
             STORYBOOK_BRANCH_SLUG: ${{ steps.bucket.outputs.branch-slug }}
           run: |
-            .travis/deploy-storybook.sh
+            .github/deploy-storybook.sh
