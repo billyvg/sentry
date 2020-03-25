@@ -1,8 +1,5 @@
 name: storybook
-on:
-  pull_request:
-    paths:
-      - '**.[tj]sx?'
+on: pull_request
 
 jobs:
     build:
