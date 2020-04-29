@@ -56,8 +56,8 @@ def relay_server_setup(live_server, tmpdir_factory):
 
     if sys.platform.startswith("linux"):
         upstream_host = "http://127.0.0.1:%s/" % port
-        kafka_host = "127.0.0.1"
-        redis_host = "127.0.0.1"
+        kafka_host = os.environ.get("SENTRY_KAFKA_HOST", "127.0.0.1")
+        redis_host = os.environ.get("SENTRY_REDIS_HOST", "127.0.0.1")
         network = "host"
     else:
         upstream_host = "http://host.docker.internal:%s/" % port

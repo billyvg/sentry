@@ -33,10 +33,9 @@ logger = logging.getLogger("sentry.testutils")
 
 
 class Browser(object):
-    def __init__(self, driver, live_server, percy):
+    def __init__(self, driver, live_server):
         self.driver = driver
         self.live_server_url = live_server.url
-        self.percy = percy
         self.domain = urlparse(self.live_server_url).hostname
         self._has_initialized_cookie_store = False
 
@@ -219,7 +218,9 @@ class Browser(object):
                 click.launch(tf.name)
                 time.sleep(1)
 
-        self.percy.snapshot(name=name)
+        from percy import percySnapshot
+
+        percySnapshot(browser=self.driver, name=name)
         return self
 
     def get_local_storage_items(self):
@@ -320,20 +321,20 @@ def pytest_configure(config):
     )
 
 
-@pytest.fixture(scope="session")
-def percy(request):
-    import percy
+#  @pytest.fixture(scope="session")
+#  def percy(request):
 
-    # Initialize Percy.
-    loader = percy.ResourceLoader(
-        root_dir=settings.STATIC_ROOT, base_url=quote(settings.STATIC_URL)
-    )
-    percy_config = percy.Config(default_widths=settings.PERCY_DEFAULT_TESTING_WIDTHS)
-    percy = percy.Runner(loader=loader, config=percy_config)
-    percy.initialize_build()
 
-    request.addfinalizer(percy.finalize_build)
-    return percy
+#  # Initialize Percy.
+#  loader = percy.ResourceLoader(
+#  root_dir=settings.STATIC_ROOT, base_url=quote(settings.STATIC_URL)
+#  )
+#  percy_config = percy.Config(default_widths=settings.PERCY_DEFAULT_TESTING_WIDTHS)
+#  percy = percy.Runner(loader=loader, config=percy_config)
+#  percy.initialize_build()
+
+#  request.addfinalizer(percy.finalize_build)
+#  return percy
 
 
 @TimedRetryPolicy.wrap(timeout=15, exceptions=(WebDriverException,), log_original_error=True)
@@ -342,7 +343,7 @@ def start_chrome(**chrome_args):
 
 
 @pytest.fixture(scope="function")
-def browser(request, percy, live_server):
+def browser(request, live_server):
     window_size = request.config.getoption("window_size")
     window_width, window_height = map(int, window_size.split("x", 1))
 
@@ -391,14 +392,14 @@ def browser(request, percy, live_server):
     request.node._driver = driver
     request.addfinalizer(fin)
 
-    browser = Browser(driver, live_server, percy)
+    browser = Browser(driver, live_server)
 
     if hasattr(request, "cls"):
         request.cls.browser = browser
     request.node.browser = browser
 
     # bind webdriver to percy for snapshots
-    percy.loader.webdriver = driver
+    #  percy.loader.webdriver = driver
 
     return driver
 
