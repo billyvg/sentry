@@ -38,7 +38,7 @@ class OrganizationOnboardingTest(AcceptanceTestCase):
         self.browser.wait_until_not('[data-test-id="platform-select-next"][aria-disabled="true"]')
         self.browser.wait_until('[data-test-id="platform-select-next"][aria-disabled="false"]')
 
-        #  @TimedRetryPolicy.wrap(timeout=5, exceptions=((TimeoutException,)))
+        @TimedRetryPolicy.wrap(timeout=5, exceptions=((TimeoutException,)))
         def click_platform_select_name(browser):
             browser.click('[data-test-id="platform-select-next"]')
             # Project getting started
