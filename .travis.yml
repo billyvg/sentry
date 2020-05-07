@@ -313,7 +313,7 @@ notifications:
   webhooks:
     urls:
       # - https://zeus.ci/hooks/fa079cf6-8e6b-11e7-9155-0a580a28081c/public/provider/travis/webhook
-      - https://smee.io/O0PvxCnh7srFDwoS/metrics/travis/webhook
+      - https://bv.ngrok.io/metrics/travis/webhook
     on_success: always
     on_failure: always
     on_start: always
