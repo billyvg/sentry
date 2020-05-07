@@ -187,20 +187,20 @@ matrix:
         - pip uninstall -y numpy
         - bin/scan
 
-    - <<: *postgres_default
-      name: 'Backend with migrations [Postgres] (1/2)'
-      env: TEST_SUITE=postgres DB=postgres TOTAL_TEST_GROUPS=2 TEST_GROUP=0 MIGRATIONS_TEST_MIGRATE=1
-    - <<: *postgres_default
-      name: 'Backend with migrations [Postgres] (2/2)'
-      env: TEST_SUITE=postgres DB=postgres TOTAL_TEST_GROUPS=2 TEST_GROUP=1 MIGRATIONS_TEST_MIGRATE=1
+    # - <<: *postgres_default
+      # name: 'Backend with migrations [Postgres] (1/2)'
+      # env: TEST_SUITE=postgres DB=postgres TOTAL_TEST_GROUPS=2 TEST_GROUP=0 MIGRATIONS_TEST_MIGRATE=1
+    # - <<: *postgres_default
+      # name: 'Backend with migrations [Postgres] (2/2)'
+      # env: TEST_SUITE=postgres DB=postgres TOTAL_TEST_GROUPS=2 TEST_GROUP=1 MIGRATIONS_TEST_MIGRATE=1
 
-    - <<: *acceptance_default
-      name: 'Acceptance'
-      env: TEST_SUITE=acceptance USE_SNUBA=1
+    # - <<: *acceptance_default
+      # name: 'Acceptance'
+      # env: TEST_SUITE=acceptance USE_SNUBA=1
 
-    - <<: *acceptance_default
-      name: 'Plugins'
-      env: TEST_SUITE=plugins DB=postgres PERCY_TOKEN=${PLUGIN_PERCY_TOKEN}
+    # - <<: *acceptance_default
+      # name: 'Plugins'
+      # env: TEST_SUITE=plugins DB=postgres PERCY_TOKEN=${PLUGIN_PERCY_TOKEN}
 
     - python: 2.7
       name: 'Frontend [test]'
@@ -232,46 +232,46 @@ matrix:
       before_script:
         - psql -c 'create database sentry;' -U postgres
 
-    - <<: *postgres_default
-      name: 'Symbolicator Integration'
-      env: TEST_SUITE=symbolicator
-      before_install:
-        - *base_install
-        - *start_snuba
-        - docker run -d --network host --name symbolicator us.gcr.io/sentryio/symbolicator:latest run
-        - docker ps -a
+    # - <<: *postgres_default
+      # name: 'Symbolicator Integration'
+      # env: TEST_SUITE=symbolicator
+      # before_install:
+        # - *base_install
+        # - *start_snuba
+        # - docker run -d --network host --name symbolicator us.gcr.io/sentryio/symbolicator:latest run
+        # - docker ps -a
 
-    - <<: *postgres_default
-      name: 'Sentry-Relay integration tests'
-      env: TEST_SUITE=relay-integration DB=postgres
-      services:
-        - docker
-        - memcached
-        - redis-server
-        - postgresql
-      before_install:
-        - *base_install
-        - *start_snuba
-        - docker pull us.gcr.io/sentryio/relay:latest # pull relay we'll run and kill it for each test
-        - docker ps -a
+    # - <<: *postgres_default
+      # name: 'Sentry-Relay integration tests'
+      # env: TEST_SUITE=relay-integration DB=postgres
+      # services:
+        # - docker
+        # - memcached
+        # - redis-server
+        # - postgresql
+      # before_install:
+        # - *base_install
+        # - *start_snuba
+        # - docker pull us.gcr.io/sentryio/relay:latest # pull relay we'll run and kill it for each test
+        # - docker ps -a
 
-    - python: 2.7
-      name: 'Snuba Integration with migrations'
-      env: TEST_SUITE=snuba USE_SNUBA=1 MIGRATIONS_TEST_MIGRATE=1
-      services:
-        - docker
-        - memcached
-        - redis-server
-        - postgresql
-      before_install:
-        - *base_install
-        - *start_snuba
-        - docker ps -a
-      install:
-        - python setup.py install_egg_info
-        - pip install -U -e ".[dev]"
-      before_script:
-        - psql -c 'create database sentry;' -U postgres
+    # - python: 2.7
+      # name: 'Snuba Integration with migrations'
+      # env: TEST_SUITE=snuba USE_SNUBA=1 MIGRATIONS_TEST_MIGRATE=1
+      # services:
+        # - docker
+        # - memcached
+        # - redis-server
+        # - postgresql
+      # before_install:
+        # - *base_install
+        # - *start_snuba
+        # - docker ps -a
+      # install:
+        # - python setup.py install_egg_info
+        # - pip install -U -e ".[dev]"
+      # before_script:
+        # - psql -c 'create database sentry;' -U postgres
 
     # XXX: this needs to be the same as postgres_default (other than python, name, env, and the rb package override)
     # NOTE: Migrations need to also be ported to py3.6, but the errors just clog up everything.
@@ -297,22 +297,23 @@ matrix:
     #     - psql -c 'create database sentry;' -U postgres
 
     # Deploy 'storybook' (component & style guide)
-    - name: 'Storybook Deploy'
-      language: node_js
-      env: STORYBOOK_BUILD=1
-      before_install:
-        # travis pyenv will attempt to use .python-version, but the appropriate python version won't be installed.
-        # since we don't need python here, we have to remove this.
-        - rm .python-version
-      install: ./bin/yarn install --frozen-lockfile
-      script: ./bin/yarn run storybook-build
-      after_success: .travis/deploy-storybook.sh
-      after_failure: skip
+    # - name: 'Storybook Deploy'
+      # language: node_js
+      # env: STORYBOOK_BUILD=1
+      # before_install:
+        # # travis pyenv will attempt to use .python-version, but the appropriate python version won't be installed.
+        # # since we don't need python here, we have to remove this.
+        # - rm .python-version
+      # install: ./bin/yarn install --frozen-lockfile
+      # script: ./bin/yarn run storybook-build
+      # after_success: .travis/deploy-storybook.sh
+      # after_failure: skip
 
 notifications:
   webhooks:
     urls:
       - https://zeus.ci/hooks/fa079cf6-8e6b-11e7-9155-0a580a28081c/public/provider/travis/webhook
+      - https://smee.io/O0PvxCnh7srFDwoS/metrics/provider/travis/webhook
     on_success: always
     on_failure: always
     on_start: always
