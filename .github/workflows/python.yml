@@ -101,5 +101,4 @@ jobs:
             PGPASSWORD: postgres
           run: |
             # Below will exit with non-zero status if model changes are missing migrations
-            rc=$(sentry django makemigrations -n ci_test --check --dry-run --no-input)
-            [ "$rc" -eq 0 ] && exit 0 || echo '::error::Error: Migration required -- to generate a migration, run `sentry django makemigrations -n <some_name>`' && exit $status
+            sentry django makemigrations -n ci_test --check --dry-run --no-input || (echo '::error::Error: Migration required -- to generate a migration, run `sentry django makemigrations -n <some_name>`' && exit 1)
