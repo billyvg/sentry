@@ -206,5 +206,5 @@ jobs:
           uses: actions/upload-artifact@v2
           if: ${{ github.ref }} == refs/heads/master
           with:
-            name: visual-snapshots-master
+            name: visual-snapshots-main
             path: .artifacts/visual-snapshots
