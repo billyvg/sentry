@@ -10,6 +10,7 @@ import pytest
 
 from datetime import datetime
 from django.conf import settings
+from django.utils.text import slugify
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -219,7 +220,8 @@ class Browser(object):
                 click.launch(tf.name)
                 time.sleep(1)
 
-        self.percy.snapshot(name=name)
+        self.save_screenshot(u".artifacts/visual-snapshots/{}.png".format(slugify(name)))
+        #  self.percy.snapshot(name=name)
         return self
 
     def get_local_storage_items(self):

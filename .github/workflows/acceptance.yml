@@ -1,29 +1,12 @@
 name: acceptance
-on: pull_request
+on: push
 
 jobs:
-    percynonce:
-      name: Generate Percy ID
-      runs-on: ubuntu-latest
-      steps:
-        - name: Generate Percy nonce
-          if: always()
-          run: |
-            echo ${{ github.run_id }}.$(($(date +%s))) > nonce.txt
-
-        - name: Upload nonce as artifact
-          if: always()
-          uses: actions/upload-artifact@v1
-          with:
-            name: percy
-            path: nonce.txt
-
     acceptance:
-      needs: [percynonce]
       runs-on: ubuntu-16.04
       strategy:
         matrix:
-          instance: [0, 1, 2]
+          instance: [0]
 
       env:
         PIP_DISABLE_PIP_VERSION_CHECK: on
@@ -50,12 +33,8 @@ jobs:
         # The hostname used to communicate with the PostgreSQL from sentry
         DATABASE_URL: postgresql://postgres:postgres@localhost/sentry
 
-        # Percy config
-        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-        PERCY_PROJECT: ${{ secrets.PERCY_PROJECT }}
-
         # Number of matrix instances
-        TOTAL_TEST_GROUPS: ${{ strategy.job-total }}
+        TOTAL_TEST_GROUPS: 10
 
       services:
         clickhouse:
@@ -215,13 +194,15 @@ jobs:
 
         - name: Run acceptance tests (#${{ steps.config.outputs.matrix-instance-number }} of ${{ strategy.job-total }})
           if: always()
-          uses: percy/exec-action@v0.3.0
-          with:
-            command: "make run-acceptance"
+          run: |
+            make run-acceptance
           env:
             USE_SNUBA: 1
             TEST_GROUP: ${{ matrix.instance }}
-            PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-            PERCY_PROJECT: ${{ secrets.PERCY_PROJECT }}
-            PERCY_PARALLEL_TOTAL: ${{ env.TOTAL_TEST_GROUPS }}
-            PERCY_PARALLEL_NONCE: ${{ steps.config.outputs.percy-nonce }}
+
+        - name: Save snapshots
+          uses: actions/upload-artifact@v2
+          if: ${{ github.ref }} == master
+          with:
+            name: visual-snapshots-master
+            path: .artifacts/visual-snapshots
