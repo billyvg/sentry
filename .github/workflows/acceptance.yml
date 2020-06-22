@@ -198,8 +198,8 @@ jobs:
           run: |
             ls -la
             ls -la .artifacts
-            ls -la .artifacts/visual-snapshots
             git status
+            ls -la .artifacts/visual-snapshots
 
         - name: Save snapshots
           uses: actions/upload-artifact@v2
