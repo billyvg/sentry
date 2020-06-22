@@ -203,7 +203,7 @@ jobs:
             ls -la .artifacts/visual-snapshots
 
         - name: Save snapshots
-          if: github.ref == 'refs/heads/master'
+          if: ${{ github.ref == 'refs/heads/master' }}
           uses: actions/upload-artifact@v2
           with:
             name: visual-snapshots-main
