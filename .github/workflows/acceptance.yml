@@ -218,8 +218,7 @@ jobs:
 
         - name: Display structure of downloaded files
           run: |
-            ls -la visual-snapshots-main
-            ls -la .artifacts/visual-snapshots
+            ls -la .artifacts/visual-snapshots-base-ref
 
         - name: Diff snapshots
           id: visual-snapshots-diff
