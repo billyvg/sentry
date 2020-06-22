@@ -47,8 +47,12 @@ function createDiff(snapshotName, output, file1, file2) {
     const img2 = pngjs_1.PNG.sync.read(fs_1.default.readFileSync(file2));
     const { width, height } = img1;
     const diff = new pngjs_1.PNG({ width, height });
-    pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, { threshold: 0.1 });
-    fs_1.default.writeFileSync(path_1.default.resolve(output, `${snapshotName}-diff.png`), pngjs_1.PNG.sync.write(diff));
+    const result = pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, {
+        threshold: 0.1,
+    });
+    if (result > 0) {
+        fs_1.default.writeFileSync(path_1.default.resolve(output, snapshotName), pngjs_1.PNG.sync.write(diff));
+    }
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {

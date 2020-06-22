@@ -19,11 +19,13 @@ function createDiff(snapshotName: string, output: string, file1: string, file2: 
   const {width, height} = img1;
   const diff = new PNG({width, height});
 
-  pixelmatch(img1.data, img2.data, diff.data, width, height, {threshold: 0.1});
-  fs.writeFileSync(
-    path.resolve(output, `${snapshotName}-diff.png`),
-    PNG.sync.write(diff)
-  );
+  const result = pixelmatch(img1.data, img2.data, diff.data, width, height, {
+    threshold: 0.1,
+  });
+
+  if (result > 0) {
+    fs.writeFileSync(path.resolve(output, snapshotName), PNG.sync.write(diff));
+  }
 }
 
 async function run(): Promise<void> {
