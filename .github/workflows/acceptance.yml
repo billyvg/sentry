@@ -224,6 +224,3 @@ jobs:
         - name: Diff snapshots
           run: |
             echo "WIP"
-          with:
-            base: visual-snapshots-main
-            head: .artifacts/visual-snapshots
