@@ -194,9 +194,16 @@ jobs:
             USE_SNUBA: 1
             TEST_GROUP: ${{ matrix.instance }}
 
+        - name: Debug
+          run: |
+            ls -la
+            ls -la .artifacts
+            ls -la .artifacts/visual-snapshots
+            git status
+
         - name: Save snapshots
           uses: actions/upload-artifact@v2
-          if: ${{ github.ref }} == master
+          if: ${{ github.ref }} == refs/heads/master
           with:
             name: visual-snapshots-master
             path: .artifacts/visual-snapshots
