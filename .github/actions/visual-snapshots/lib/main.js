@@ -37,6 +37,7 @@ const path_1 = __importDefault(require("path"));
 const core = __importStar(require("@actions/core"));
 const pngjs_1 = require("pngjs");
 const pixelmatch_1 = __importDefault(require("pixelmatch"));
+const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
 function isSnapshot(dirent) {
     // Only png atm
     return dirent.isFile() && dirent.name.endsWith('.png');
@@ -57,6 +58,7 @@ function run() {
             const diff = core.getInput('diff');
             core.debug(`${base} vs ${current} vs ${diff}`);
             core.debug(__dirname);
+            core.debug(GITHUB_WORKSPACE);
             core.setOutput('diff-path', diff);
             const newSnapshots = new Set([]);
             const missingSnapshots = new Map([]);
@@ -72,7 +74,7 @@ function run() {
             currentDir.filter(isSnapshot).forEach(entry => {
                 currentSnapshots.set(entry.name, entry);
                 if (baseSnapshots.has(entry.name)) {
-                    createDiff(entry.name, path_1.default.resolve(__dirname, diff), path_1.default.resolve(__dirname, current, entry.name), path_1.default.resolve(__dirname, base, entry.name));
+                    createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(GITHUB_WORKSPACE, base, entry.name));
                     missingSnapshots.delete(entry.name);
                 }
                 else {

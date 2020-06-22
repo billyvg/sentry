@@ -6,6 +6,8 @@ import * as core from '@actions/core';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
+const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
+
 function isSnapshot(dirent: fs.Dirent) {
   // Only png atm
   return dirent.isFile() && dirent.name.endsWith('.png');
@@ -32,6 +34,7 @@ async function run(): Promise<void> {
     core.debug(`${base} vs ${current} vs ${diff}`);
 
     core.debug(__dirname);
+    core.debug(GITHUB_WORKSPACE);
     core.setOutput('diff-path', diff);
 
     const newSnapshots = new Set<string>([]);
@@ -54,9 +57,9 @@ async function run(): Promise<void> {
       if (baseSnapshots.has(entry.name)) {
         createDiff(
           entry.name,
-          path.resolve(__dirname, diff),
-          path.resolve(__dirname, current, entry.name),
-          path.resolve(__dirname, base, entry.name)
+          path.resolve(GITHUB_WORKSPACE, diff),
+          path.resolve(GITHUB_WORKSPACE, current, entry.name),
+          path.resolve(GITHUB_WORKSPACE, base, entry.name)
         );
         missingSnapshots.delete(entry.name);
       } else {
