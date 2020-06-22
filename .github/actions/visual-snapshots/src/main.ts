@@ -42,9 +42,15 @@ async function run(): Promise<void> {
     const currentSnapshots = new Map<string, fs.Dirent>([]);
     const baseSnapshots = new Map<string, fs.Dirent>([]);
 
-    // readDir
+    // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});
     const baseDir = fs.readdirSync(base, {withFileTypes: true});
+
+    // make output dir if not exists
+    const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
+    if (!fs.existsSync(diffPath)) {
+      fs.mkdirSync(diffPath);
+    }
 
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);

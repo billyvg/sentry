@@ -631,9 +631,14 @@ function run() {
             const missingSnapshots = new Map([]);
             const currentSnapshots = new Map([]);
             const baseSnapshots = new Map([]);
-            // readDir
+            // read dirs
             const currentDir = fs_1.default.readdirSync(current, { withFileTypes: true });
             const baseDir = fs_1.default.readdirSync(base, { withFileTypes: true });
+            // make output dir if not exists
+            const diffPath = path_1.default.resolve(GITHUB_WORKSPACE, diff);
+            if (!fs_1.default.existsSync(diffPath)) {
+                fs_1.default.mkdirSync(diffPath);
+            }
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
