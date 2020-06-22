@@ -226,7 +226,7 @@ jobs:
           with:
             base: .artifacts/visual-snapshots-base-ref
             current: .artifacts/visual-snapshots
-            output: .artifacts/visual-snapshots-diff
+            diff: .artifacts/visual-snapshots-diff
 
         - name: Upload snapshot diffs
           if: ${{ github.ref }} != refs/heads/master
