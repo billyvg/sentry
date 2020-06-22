@@ -100,11 +100,6 @@ jobs:
         # Install node
         - uses: volta-cli/action@v1
 
-        - name: Download percy nonce
-          uses: actions/download-artifact@v1
-          with:
-            name: percy
-
         # Yarn
         #   - See https://github.com/actions/cache/blob/master/examples.md#node---yarn for example
         # Python
@@ -121,7 +116,6 @@ jobs:
           run: |
             echo "::set-output name=yarn-cache-dir::$(yarn cache dir)"
             echo "::set-output name=python-version::2.7"
-            echo "::set-output name=percy-nonce::$(<percy/nonce.txt)"
             echo "::set-output name=matrix-instance-number::$(($MATRIX_INSTANCE+1))"
 
         # yarn cache
