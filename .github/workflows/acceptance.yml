@@ -210,14 +210,20 @@ jobs:
             path: .artifacts/visual-snapshots
 
         - name: Download main snapshots
-          if: ${{ github.ref }} != master
+          if: ${{ github.ref }} != refs/heads/master
           uses: actions/download-artifact@v2
           with:
             name: visual-snapshots-main
 
         - name: Display structure of downloaded files
-          run: ls -R
+          run: |
+            ls -R
+            ls -la visual-snapshots-main
+            ls -la .artifacts/visual-snapshots
 
         - name: Diff snapshots
           run: |
             echo "WIP"
+          with:
+            base: visual-snapshots-main
+            head: .artifacts/visual-snapshots
