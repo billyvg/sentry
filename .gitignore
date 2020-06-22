@@ -47,3 +47,4 @@ package-lock.json
 pip-wheel-metadata/
 Brewfile.lock.json
 ~/
+node_modules

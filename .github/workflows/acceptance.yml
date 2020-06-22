@@ -214,13 +214,24 @@ jobs:
           uses: actions/download-artifact@v2
           with:
             name: visual-snapshots-main
+            path: .artifacts/visual-snapshots-base-ref
 
         - name: Display structure of downloaded files
           run: |
-            ls -R
             ls -la visual-snapshots-main
             ls -la .artifacts/visual-snapshots
 
         - name: Diff snapshots
-          run: |
-            echo "WIP"
+          id: visual-snapshots-diff
+          uses: ./.github/actions/visual-snapshots
+          with:
+            base: .artifacts/visual-snapshots-base-ref
+            current: .artifacts/visual-snapshots
+            output: .artifacts/visual-snapshots-diff
+
+        - name: Upload snapshot diffs
+          if: ${{ github.ref }} != refs/heads/master
+          uses: actions/upload-artifact@v2
+          with:
+            name: visual-snapshots-diff
+            path: ${{ steps.visual-snapshots-diff.outputs.diff-path }}

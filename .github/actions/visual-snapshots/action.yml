@@ -1,0 +1,13 @@
+name: 'visual-snapshot'
+description: 'Visual snapshot tester for GitHub Actions'
+author: 'Sentry'
+inputs:
+  base:
+    description: 'path to the base snapshots (e.g. main branch)'
+  current:
+    description: 'path to the current set of snapshots'
+  diff:
+    description: 'path to write snapshot diffs'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
