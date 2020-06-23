@@ -2339,6 +2339,30 @@ function run() {
             if (missingSnapshots.size) {
                 core.setFailed(`The following visual snapshots are missing: ${[...changedSnapshots].join(', ')}`);
             }
+            const conclusion = !!changedSnapshots.size || !!missingSnapshots.size
+                ? 'failure'
+                : !!newSnapshots.size
+                    ? 'neutral'
+                    : 'success';
+            // Create a GitHub check with our results
+            octokit.checks.create({
+                owner,
+                repo,
+                name: 'Visual Snapshot',
+                head_sha: process.env.GITHUB_SHA || '',
+                status: 'completed',
+                conclusion,
+                output: {
+                    title: 'Visual Snapshots',
+                    summary: `Summary:
+* **${changedSnapshots.size}** changed snapshots
+* **${newSnapshots.size}** new snapshots
+* **${missingSnapshots.size}** missing snapshots
+`,
+                    text: `TBD
+`,
+                },
+            });
         }
         catch (error) {
             core.setFailed(error.message);
