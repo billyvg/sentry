@@ -107,7 +107,6 @@ function run() {
             });
             core.debug(download.headers.location || '');
             const outputPath = path_1.default.resolve('/tmp');
-            fs_1.default.mkdirSync(outputPath);
             yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
             yield exec_1.exec(`unzip ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
             // read dirs

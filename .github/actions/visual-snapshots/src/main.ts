@@ -99,7 +99,6 @@ async function run(): Promise<void> {
     core.debug(download.headers.location || '');
 
     const outputPath = path.resolve('/tmp');
-    fs.mkdirSync(outputPath);
     await exec(
       `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
         download.headers.location
