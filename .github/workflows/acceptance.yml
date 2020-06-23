@@ -195,6 +195,20 @@ jobs:
             USE_SNUBA: 1
             TEST_GROUP: ${{ matrix.instance }}
 
+        - name: Save snapshots for debug
+          uses: actions/upload-artifact@v2
+          with:
+            name: visual-snapshots-debug
+            path: .artifacts/visual-snapshots
+
+        # - name: Download main snapshots
+          # if: ${{ github.ref }} != refs/heads/master
+          # uses: actions/download-artifact@v2
+          # with:
+            # name: visual-snapshots-main
+            # path: .artifacts/visual-snapshots-base-ref
+
+
         # - name: Debug
           # run: |
             # ls -la
