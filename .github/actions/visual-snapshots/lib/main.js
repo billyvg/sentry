@@ -200,6 +200,9 @@ function run() {
                             origin: release.upload_url,
                             name: entry.name,
                             data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
+                            headers: {
+                                'content-type': 'image/png',
+                            },
                         });
                     })));
                     return release;

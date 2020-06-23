@@ -224,6 +224,9 @@ async function run(): Promise<void> {
             data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
               'base64'
             ),
+            headers: {
+              'content-type': 'image/png',
+            },
           });
         })
       );
