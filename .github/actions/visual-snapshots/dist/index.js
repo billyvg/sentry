@@ -2324,7 +2324,7 @@ function run() {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
             });
-            currentDir.filter(isSnapshot).forEach((entry) => __awaiter(this, void 0, void 0, function* () {
+            yield Promise.all(currentDir.filter(isSnapshot).map((entry) => __awaiter(this, void 0, void 0, function* () {
                 currentSnapshots.set(entry.name, entry);
                 if (baseSnapshots.has(entry.name)) {
                     try {
@@ -2341,7 +2341,7 @@ function run() {
                 else {
                     newSnapshots.add(entry.name);
                 }
-            }));
+            })));
             missingSnapshots.forEach(entry => {
                 core.debug(`missing snapshot: ${entry.name}`);
             });

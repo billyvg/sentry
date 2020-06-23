@@ -153,28 +153,30 @@ async function run(): Promise<void> {
       missingSnapshots.set(entry.name, entry);
     });
 
-    currentDir.filter(isSnapshot).forEach(async entry => {
-      currentSnapshots.set(entry.name, entry);
+    await Promise.all(
+      currentDir.filter(isSnapshot).map(async entry => {
+        currentSnapshots.set(entry.name, entry);
 
-      if (baseSnapshots.has(entry.name)) {
-        try {
-          const isDiff = await createDiff(
-            entry.name,
-            path.resolve(GITHUB_WORKSPACE, diff),
-            path.resolve(GITHUB_WORKSPACE, current, entry.name),
-            path.resolve(outputPath, entry.name)
-          );
-          if (isDiff) {
-            changedSnapshots.add(entry.name);
+        if (baseSnapshots.has(entry.name)) {
+          try {
+            const isDiff = await createDiff(
+              entry.name,
+              path.resolve(GITHUB_WORKSPACE, diff),
+              path.resolve(GITHUB_WORKSPACE, current, entry.name),
+              path.resolve(outputPath, entry.name)
+            );
+            if (isDiff) {
+              changedSnapshots.add(entry.name);
+            }
+            missingSnapshots.delete(entry.name);
+          } catch (err) {
+            core.debug(`Unable to diff: ${err.message}`);
           }
-          missingSnapshots.delete(entry.name);
-        } catch (err) {
-          core.debug(`Unable to diff: ${err.message}`);
+        } else {
+          newSnapshots.add(entry.name);
         }
-      } else {
-        newSnapshots.add(entry.name);
-      }
-    });
+      })
+    );
 
     missingSnapshots.forEach(entry => {
       core.debug(`missing snapshot: ${entry.name}`);
