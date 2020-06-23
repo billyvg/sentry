@@ -172,34 +172,49 @@ function run() {
             changedSnapshots.forEach(name => {
                 core.debug(`changed snapshot: ${name}`);
             });
-            let hasRelease = false;
-            if (changedSnapshots.size || newSnapshots.size) {
-                // Create a release to store our diffed images
-                const { data: release } = yield octokit.repos.createRelease({
-                    owner,
-                    repo,
-                    tag_name: `visual-snapshot-${GITHUB_SHA}`,
-                    target_commitish: GITHUB_SHA,
-                    name: 'Visual Snapshot Artifacts',
-                    body: 'Testing',
-                    draft: true,
-                    prerelease: true,
-                });
-                const diffFiles = yield fs.readdir(diffPath, {
-                    withFileTypes: true,
-                });
-                diffFiles.filter(isSnapshot).forEach((entry) => __awaiter(this, void 0, void 0, function* () {
-                    core.debug(`Diff file: ${entry.name}`);
-                    yield octokit.repos.uploadReleaseAsset({
+            function createRelease() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const diffFiles = yield fs.readdir(diffPath, {
+                        withFileTypes: true,
+                    });
+                    if (!diffFiles.length) {
+                        return null;
+                    }
+                    // No need
+                    // Create a release to store our diffed images
+                    const { data: release } = yield octokit.repos.createRelease({
                         owner,
                         repo,
-                        release_id: release.id,
-                        origin: release.upload_url,
-                        name: entry.name,
-                        data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
+                        tag_name: `visual-snapshot-${GITHUB_SHA}`,
+                        target_commitish: GITHUB_SHA,
+                        name: 'Visual Snapshot Artifacts',
+                        body: 'Testing',
+                        prerelease: true,
                     });
-                }));
-                hasRelease = true;
+                    yield Promise.all(diffFiles.filter(isSnapshot).map((entry) => __awaiter(this, void 0, void 0, function* () {
+                        core.debug(`Diff file: ${entry.name}`);
+                        return yield octokit.repos.uploadReleaseAsset({
+                            owner,
+                            repo,
+                            release_id: release.id,
+                            origin: release.upload_url,
+                            name: entry.name,
+                            data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
+                        });
+                    })));
+                    return release;
+                });
+            }
+            const release = yield createRelease();
+            let diffArtifactUrls = [];
+            if (release !== null) {
+                const { data: releaseWithArtifacts } = yield octokit.repos.getRelease({
+                    owner,
+                    repo,
+                    release_id: release.id,
+                });
+                releaseWithArtifacts.assets;
+                diffArtifactUrls = releaseWithArtifacts.assets.map(({ name, browser_download_url }) => ({ alt: name, image_url: browser_download_url }));
             }
             const conclusion = !!changedSnapshots.size || !!missingSnapshots.size
                 ? 'failure'
@@ -231,6 +246,7 @@ ${[...missingSnapshots].map(([name]) => `* ${name}`).join('\n')}
 ## New snapshots
 ${[...newSnapshots].map(name => `* ${name}`).join('\n')}
 `,
+                    images: diffArtifactUrls,
                 },
             });
         }

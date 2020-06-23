@@ -190,8 +190,16 @@ async function run(): Promise<void> {
       core.debug(`changed snapshot: ${name}`);
     });
 
-    let hasRelease = false;
-    if (changedSnapshots.size || newSnapshots.size) {
+    async function createRelease() {
+      const diffFiles = await fs.readdir(diffPath, {
+        withFileTypes: true,
+      });
+
+      if (!diffFiles.length) {
+        return null;
+      }
+
+      // No need
       // Create a release to store our diffed images
       const {data: release} = await octokit.repos.createRelease({
         owner,
@@ -200,29 +208,43 @@ async function run(): Promise<void> {
         target_commitish: GITHUB_SHA,
         name: 'Visual Snapshot Artifacts',
         body: 'Testing',
-        draft: true,
         prerelease: true,
       });
 
-      const diffFiles = await fs.readdir(diffPath, {
-        withFileTypes: true,
-      });
-      diffFiles.filter(isSnapshot).forEach(async entry => {
-        core.debug(`Diff file: ${entry.name}`);
+      await Promise.all(
+        diffFiles.filter(isSnapshot).map(async entry => {
+          core.debug(`Diff file: ${entry.name}`);
 
-        await octokit.repos.uploadReleaseAsset({
-          owner,
-          repo,
-          release_id: release.id,
-          origin: release.upload_url,
-          name: entry.name,
-          data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
-            'base64'
-          ),
-        });
+          return await octokit.repos.uploadReleaseAsset({
+            owner,
+            repo,
+            release_id: release.id,
+            origin: release.upload_url,
+            name: entry.name,
+            data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
+              'base64'
+            ),
+          });
+        })
+      );
+
+      return release;
+    }
+
+    const release = await createRelease();
+    let diffArtifactUrls: {alt: string; image_url: string}[] = [];
+
+    if (release !== null) {
+      const {data: releaseWithArtifacts} = await octokit.repos.getRelease({
+        owner,
+        repo,
+        release_id: release.id,
       });
 
-      hasRelease = true;
+      releaseWithArtifacts.assets;
+      diffArtifactUrls = releaseWithArtifacts.assets.map(
+        ({name, browser_download_url}) => ({alt: name, image_url: browser_download_url})
+      );
     }
 
     const conclusion =
@@ -257,6 +279,7 @@ ${[...missingSnapshots].map(([name]) => `* ${name}`).join('\n')}
 ## New snapshots
 ${[...newSnapshots].map(name => `* ${name}`).join('\n')}
 `,
+        images: diffArtifactUrls,
       },
     });
   } catch (error) {
