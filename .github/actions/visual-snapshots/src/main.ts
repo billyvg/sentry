@@ -117,6 +117,9 @@ async function run(): Promise<void> {
     const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
     fs.mkdirSync(diffPath);
 
+    core.debug(JSON.stringify(baseDir));
+    await exec('ls /tmp/visual-snapshots-base');
+
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);
       missingSnapshots.set(entry.name, entry);
