@@ -2288,7 +2288,7 @@ function run() {
             const outputPath = path_1.default.resolve('/tmp/visual-snapshots-base');
             fs_1.default.mkdirSync(outputPath, { recursive: true });
             yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.url}`);
-            yield exec_1.exec(`unzip ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')}`);
+            yield exec_1.exec(`cd ${outputPath} && unzip ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')}`);
             // read dirs
             const currentDir = fs_1.default.readdirSync(current, { withFileTypes: true });
             const baseDir = fs_1.default.readdirSync(path_1.default.resolve(outputPath), {

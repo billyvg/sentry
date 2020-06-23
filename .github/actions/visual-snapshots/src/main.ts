@@ -105,7 +105,9 @@ async function run(): Promise<void> {
         download.url
       }`
     );
-    await exec(`unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')}`);
+    await exec(
+      `cd ${outputPath} && unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')}`
+    );
 
     // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});
