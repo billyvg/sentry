@@ -52,8 +52,6 @@ function createDiff(snapshotName, output, file1, file2) {
     const img2 = pngjs_1.PNG.sync.read(fs_1.default.readFileSync(file2));
     const { width, height } = img1;
     const diff = new pngjs_1.PNG({ width, height });
-    core.debug(`img1: ${file1}, w/h: ${width}, ${height}`);
-    core.debug(`img2: ${file2}, w/h: ${img2.width}, ${img2.height}`);
     const result = pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, {
         threshold: 0.1,
     });
