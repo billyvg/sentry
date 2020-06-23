@@ -106,7 +106,7 @@ async function run(): Promise<void> {
       }`
     );
     await exec(
-      `cd ${outputPath} && unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')}`
+      `unzip -d ${outputPath} ${path.resolve(outputPath, 'visual-snapshots-base.zip')}`
     );
 
     // read dirs
