@@ -71,7 +71,6 @@ function run() {
             const current = core.getInput('current');
             const diff = core.getInput('diff');
             core.debug(`${base} vs ${current} vs ${diff}`);
-            core.debug(__dirname);
             core.debug(GITHUB_WORKSPACE);
             core.setOutput('diff-path', diff);
             const newSnapshots = new Set([]);
@@ -92,7 +91,6 @@ function run() {
             if (!workflowRun) {
                 core.debug('No workflow run found');
             }
-            core.debug(JSON.stringify(workflowRun));
             const { data: { artifacts }, } = yield octokit.actions.listWorkflowRunArtifacts({
                 owner,
                 repo,
@@ -117,7 +115,9 @@ function run() {
             try {
                 yield fs.mkdir(outputPath, { recursive: true });
             }
-            catch (_a) { }
+            catch (_a) {
+                core.debug(`Unable to create dir: ${outputPath}`);
+            }
             yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.url}`);
             yield exec_1.exec(`unzip -d ${outputPath} ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')}`);
             // read dirs
@@ -127,12 +127,15 @@ function run() {
                     withFileTypes: true,
                 }),
             ]);
+            console.log(currentDir, baseDir);
             // make output dir if not exists
             const diffPath = path_1.default.resolve(GITHUB_WORKSPACE, diff);
             try {
                 yield fs.mkdir(diffPath, { recursive: true });
             }
-            catch (_b) { }
+            catch (_b) {
+                core.debug(`Unable to create dir: ${diffPath}`);
+            }
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
@@ -181,6 +184,7 @@ function run() {
                     withFileTypes: true,
                 });
                 diffFiles.filter(isSnapshot).forEach((entry) => __awaiter(this, void 0, void 0, function* () {
+                    core.debug(`Diff file: ${entry.name}`);
                     yield octokit.repos.uploadReleaseAsset({
                         owner,
                         repo,

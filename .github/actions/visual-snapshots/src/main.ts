@@ -49,7 +49,6 @@ async function run(): Promise<void> {
     const diff: string = core.getInput('diff');
     core.debug(`${base} vs ${current} vs ${diff}`);
 
-    core.debug(__dirname);
     core.debug(GITHUB_WORKSPACE);
     core.setOutput('diff-path', diff);
 
@@ -77,8 +76,6 @@ async function run(): Promise<void> {
     if (!workflowRun) {
       core.debug('No workflow run found');
     }
-
-    core.debug(JSON.stringify(workflowRun));
 
     const {
       data: {artifacts},
@@ -112,7 +109,9 @@ async function run(): Promise<void> {
     const outputPath = path.resolve('/tmp/visual-snapshots-base');
     try {
       await fs.mkdir(outputPath, {recursive: true});
-    } catch {}
+    } catch {
+      core.debug(`Unable to create dir: ${outputPath}`);
+    }
 
     await exec(
       `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
@@ -131,12 +130,16 @@ async function run(): Promise<void> {
       }),
     ]);
 
+    console.log(currentDir, baseDir);
+
     // make output dir if not exists
     const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
 
     try {
       await fs.mkdir(diffPath, {recursive: true});
-    } catch {}
+    } catch {
+      core.debug(`Unable to create dir: ${diffPath}`);
+    }
 
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);
@@ -196,6 +199,8 @@ async function run(): Promise<void> {
         withFileTypes: true,
       });
       diffFiles.filter(isSnapshot).forEach(async entry => {
+        core.debug(`Diff file: ${entry.name}`);
+
         await octokit.repos.uploadReleaseAsset({
           owner,
           repo,
