@@ -24,6 +24,8 @@ function createDiff(snapshotName: string, output: string, file1: string, file2: 
   const {width, height} = img1;
   const diff = new PNG({width, height});
 
+  core.debug(`img1: ${file1}, w/h: ${width}, ${height}`);
+  core.debug(`img2: ${file2}, w/h: ${img2.width}, ${img2.height}`);
   const result = pixelmatch(img1.data, img2.data, diff.data, width, height, {
     threshold: 0.1,
   });
@@ -70,6 +72,8 @@ async function run(): Promise<void> {
     if (!workflowRun) {
       core.debug('No workflow run found');
     }
+
+    core.debug(JSON.stringify(workflowRun));
 
     const {
       data: {artifacts},
@@ -133,18 +137,22 @@ async function run(): Promise<void> {
       currentSnapshots.set(entry.name, entry);
 
       if (baseSnapshots.has(entry.name)) {
-        const isDiff = createDiff(
-          entry.name,
-          path.resolve(GITHUB_WORKSPACE, diff),
-          path.resolve(GITHUB_WORKSPACE, current, entry.name),
-          path.resolve(outputPath, entry.name)
-        );
-        if (isDiff) {
-          changedSnapshots.add(entry.name);
-        } else {
-          core.debug(`no change detected: ${entry.name}`);
+        try {
+          const isDiff = createDiff(
+            entry.name,
+            path.resolve(GITHUB_WORKSPACE, diff),
+            path.resolve(GITHUB_WORKSPACE, current, entry.name),
+            path.resolve(outputPath, entry.name)
+          );
+          if (isDiff) {
+            changedSnapshots.add(entry.name);
+          } else {
+            core.debug(`no change detected: ${entry.name}`);
+          }
+          missingSnapshots.delete(entry.name);
+        } catch (err) {
+          core.debug(`Unable to diff: ${err.message}`);
         }
-        missingSnapshots.delete(entry.name);
       } else {
         newSnapshots.add(entry.name);
       }
