@@ -246,9 +246,10 @@ async function run(): Promise<void> {
       });
 
       releaseWithArtifacts.assets;
-      diffArtifactUrls = releaseWithArtifacts.assets.map(
-        ({name, browser_download_url}) => ({alt: name, image_url: browser_download_url})
-      );
+      diffArtifactUrls = releaseWithArtifacts.assets.map(({name, url}) => ({
+        alt: name,
+        image_url: url,
+      }));
     }
 
     const conclusion =
