@@ -2297,6 +2297,9 @@ function run() {
             // make output dir if not exists
             const diffPath = path_1.default.resolve(GITHUB_WORKSPACE, diff);
             fs_1.default.mkdirSync(diffPath);
+            core.debug('basedir');
+            core.debug(JSON.stringify(baseDir));
+            yield exec_1.exec('ls /tmp/visual-snapshots-base');
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
