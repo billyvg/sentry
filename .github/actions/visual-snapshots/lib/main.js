@@ -137,11 +137,11 @@ function run() {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
             });
-            currentDir.filter(isSnapshot).forEach(entry => {
+            currentDir.filter(isSnapshot).forEach((entry) => __awaiter(this, void 0, void 0, function* () {
                 currentSnapshots.set(entry.name, entry);
                 if (baseSnapshots.has(entry.name)) {
                     try {
-                        const isDiff = createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(outputPath, entry.name));
+                        const isDiff = yield createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(outputPath, entry.name));
                         if (isDiff) {
                             changedSnapshots.add(entry.name);
                         }
@@ -154,7 +154,7 @@ function run() {
                 else {
                     newSnapshots.add(entry.name);
                 }
-            });
+            }));
             missingSnapshots.forEach(entry => {
                 core.debug(`missing snapshot: ${entry.name}`);
             });

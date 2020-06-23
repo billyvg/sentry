@@ -143,12 +143,12 @@ async function run(): Promise<void> {
       missingSnapshots.set(entry.name, entry);
     });
 
-    currentDir.filter(isSnapshot).forEach(entry => {
+    currentDir.filter(isSnapshot).forEach(async entry => {
       currentSnapshots.set(entry.name, entry);
 
       if (baseSnapshots.has(entry.name)) {
         try {
-          const isDiff = createDiff(
+          const isDiff = await createDiff(
             entry.name,
             path.resolve(GITHUB_WORKSPACE, diff),
             path.resolve(GITHUB_WORKSPACE, current, entry.name),
