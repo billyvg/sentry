@@ -96,7 +96,7 @@ async function run(): Promise<void> {
       archive_format: 'zip',
     });
 
-    core.debug(download.headers.location || '');
+    core.debug(JSON.stringify(download));
 
     const outputPath = path.resolve('/tmp');
     await exec(

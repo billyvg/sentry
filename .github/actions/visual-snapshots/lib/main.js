@@ -105,7 +105,7 @@ function run() {
                 artifact_id: mainSnapshotArtifact.id,
                 archive_format: 'zip',
             });
-            core.debug(download.headers.location || '');
+            core.debug(JSON.stringify(download));
             const outputPath = path_1.default.resolve('/tmp');
             yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
             yield exec_1.exec(`unzip ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
