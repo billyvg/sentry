@@ -51,10 +51,15 @@ function isSnapshot(dirent) {
 }
 function createDiff(snapshotName, output, file1, file2) {
     return __awaiter(this, void 0, void 0, function* () {
-        const img1 = pngjs_1.PNG.sync.read(yield fs.readFile(file1));
-        const img2 = pngjs_1.PNG.sync.read(yield fs.readFile(file2));
+        const [fileContent1, fileContent2] = yield Promise.all([
+            fs.readFile(file1),
+            fs.readFile(file2),
+        ]);
+        const img1 = pngjs_1.PNG.sync.read(fileContent1);
+        const img2 = pngjs_1.PNG.sync.read(fileContent2);
         const { width, height } = img1;
         const diff = new pngjs_1.PNG({ width, height });
+        console.log(`diff ${snapshotName}: `, img1.height, img2.height);
         const result = pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, {
             threshold: 0.1,
         });

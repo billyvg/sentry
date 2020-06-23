@@ -26,10 +26,17 @@ async function createDiff(
   file1: string,
   file2: string
 ) {
-  const img1 = PNG.sync.read(await fs.readFile(file1));
-  const img2 = PNG.sync.read(await fs.readFile(file2));
+  const [fileContent1, fileContent2] = await Promise.all([
+    fs.readFile(file1),
+    fs.readFile(file2),
+  ]);
+
+  const img1 = PNG.sync.read(fileContent1);
+  const img2 = PNG.sync.read(fileContent2);
   const {width, height} = img1;
   const diff = new PNG({width, height});
+
+  console.log(`diff ${snapshotName}: `, img1.height, img2.height);
 
   const result = pixelmatch(img1.data, img2.data, diff.data, width, height, {
     threshold: 0.1,
