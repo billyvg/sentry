@@ -133,12 +133,16 @@ function run() {
                     if (isDiff) {
                         changedSnapshots.add(entry.name);
                     }
+                    else {
+                        core.debug(`no change detected: ${entry.name}`);
+                    }
                     missingSnapshots.delete(entry.name);
                 }
                 else {
                     newSnapshots.add(entry.name);
                 }
             });
+            yield exec_1.exec(`ls ${path_1.default.resolve(GITHUB_WORKSPACE, diff)}`);
             missingSnapshots.forEach(entry => {
                 core.debug(`missing snapshot: ${entry.name}`);
             });

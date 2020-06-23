@@ -141,6 +141,8 @@ async function run(): Promise<void> {
         );
         if (isDiff) {
           changedSnapshots.add(entry.name);
+        } else {
+          core.debug(`no change detected: ${entry.name}`);
         }
         missingSnapshots.delete(entry.name);
       } else {
@@ -148,6 +150,7 @@ async function run(): Promise<void> {
       }
     });
 
+    await exec(`ls ${path.resolve(GITHUB_WORKSPACE, diff)}`);
     missingSnapshots.forEach(entry => {
       core.debug(`missing snapshot: ${entry.name}`);
     });
