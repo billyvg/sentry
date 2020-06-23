@@ -189,7 +189,8 @@ const IncidentLink = styled(Link)`
 `;
 
 const IncidentPanelItem = styled(PanelItem)`
-  font-size: 8px;
+  font-size: ${p => p.theme.fontSizeMedium};
+  padding: ${space(1.5)} ${space(2)} ${space(1.5)} 0;
 `;
 
 export default AlertListRow;
