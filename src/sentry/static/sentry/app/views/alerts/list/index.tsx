@@ -258,7 +258,29 @@ class IncidentsList extends AsyncComponent<Props, State & AsyncComponent['state'
               </TableLayout>
             </StyledPanelHeader>
           )}
-          {showLoadingIndicator ? <LoadingIndicator /> : 'Billy was here'}
+          {showLoadingIndicator ? (
+            <LoadingIndicator />
+          ) : (
+            this.tryRenderFirstVisit() ??
+            this.tryRenderEmpty() ?? (
+              <PanelBody>
+                <Projects orgId={orgId} slugs={Array.from(allProjectsFromIncidents)}>
+                  {({initiallyLoaded, projects}) =>
+                    incidentList.map(incident => (
+                      <AlertListRow
+                        key={incident.id}
+                        projectsLoaded={initiallyLoaded}
+                        projects={projects}
+                        incident={incident}
+                        orgId={orgId}
+                        filteredStatus={status}
+                      />
+                    ))
+                  }
+                </Projects>
+              </PanelBody>
+            )
+          )}
         </Panel>
         <Pagination pageLinks={incidentListPageLinks} />
       </React.Fragment>
