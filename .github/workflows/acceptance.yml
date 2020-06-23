@@ -119,19 +119,19 @@ jobs:
             echo "::set-output name=matrix-instance-number::$(($MATRIX_INSTANCE+1))"
 
 
-        - name: Download main snapshots
-          uses: actions/download-artifact@v2
-          with:
-            name: visual-snapshots-debug
-            path: .artifacts/visual-snapshots
+        # - name: Download main snapshots
+          # uses: actions/download-artifact@v2
+          # with:
+            # name: visual-snapshots-debug
+            # path: .artifacts/visual-snapshots
 
-        - name: Diff snapshots
-          uses: ./.github/actions/visual-snapshots
-          with:
-            githubToken: ${{ secrets.GITHUB_TOKEN }}
-            base: .artifacts/visual-snapshots-base-ref
-            current: .artifacts/visual-snapshots
-            diff: .artifacts/visual-snapshots-diff
+        # - name: Diff snapshots
+          # uses: ./.github/actions/visual-snapshots
+          # with:
+            # githubToken: ${{ secrets.GITHUB_TOKEN }}
+            # base: .artifacts/visual-snapshots-base-ref
+            # current: .artifacts/visual-snapshots
+            # diff: .artifacts/visual-snapshots-diff
 
         # yarn cache
         - uses: actions/cache@v1
@@ -248,18 +248,18 @@ jobs:
           # run: |
             # ls -la .artifacts/visual-snapshots-base-ref
 
-        - name: Diff snapshots
-          id: visual-snapshots-diff
-          uses: ./.github/actions/visual-snapshots
-          with:
-            githubToken: ${{ secrets.GITHUB_TOKEN }}
-            base: .artifacts/visual-snapshots-base-ref
-            current: .artifacts/visual-snapshots
-            diff: .artifacts/visual-snapshots-diff
+        # - name: Diff snapshots
+          # id: visual-snapshots-diff
+          # uses: ./.github/actions/visual-snapshots
+          # with:
+            # githubToken: ${{ secrets.GITHUB_TOKEN }}
+            # base: .artifacts/visual-snapshots-base-ref
+            # current: .artifacts/visual-snapshots
+            # diff: .artifacts/visual-snapshots-diff
 
-        - name: Upload snapshot diffs
-          if: ${{ github.ref }} != refs/heads/master
-          uses: actions/upload-artifact@v2
-          with:
-            name: visual-snapshots-diff
-            path: ${{ steps.visual-snapshots-diff.outputs.diff-path }}
+        # - name: Upload snapshot diffs
+          # if: ${{ github.ref }} != refs/heads/master
+          # uses: actions/upload-artifact@v2
+          # with:
+            # name: visual-snapshots-diff
+            # path: ${{ steps.visual-snapshots-diff.outputs.diff-path }}
