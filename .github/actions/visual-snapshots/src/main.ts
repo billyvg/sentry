@@ -101,14 +101,10 @@ async function run(): Promise<void> {
     const outputPath = path.resolve('/tmp');
     await exec(
       `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
-        download.headers.location
+        download.url
       }`
     );
-    await exec(
-      `unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
-        download.headers.location
-      }`
-    );
+    await exec(`unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')}`);
 
     // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});
