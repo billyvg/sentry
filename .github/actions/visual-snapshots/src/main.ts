@@ -4,6 +4,8 @@ import path from 'path';
 
 import * as github from '@actions/github';
 import * as core from '@actions/core';
+import {exec} from '@actions/exec';
+
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
@@ -76,16 +78,48 @@ async function run(): Promise<void> {
     });
 
     core.debug(JSON.stringify(artifacts));
+    // filter artifacts for `visual-snapshots-main`
+    const mainSnapshotArtifact = artifacts.find(
+      artifact => artifact.name === 'visual-snapshots-main'
+    );
+
+    if (!mainSnapshotArtifact) {
+      core.debug('Artifact not found');
+      return;
+    }
+
+    // Download the artifact
+    const download = await octokit.actions.downloadArtifact({
+      owner,
+      repo,
+      artifact_id: mainSnapshotArtifact.id,
+      archive_format: 'zip',
+    });
+
+    core.debug(download.headers.location || '');
+
+    const outputPath = path.resolve('/tmp');
+    fs.mkdirSync(outputPath);
+    await exec(
+      `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
+        download.headers.location
+      }`
+    );
+    await exec(
+      `unzip ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
+        download.headers.location
+      }`
+    );
 
     // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});
-    const baseDir = fs.readdirSync(base, {withFileTypes: true});
+    const baseDir = fs.readdirSync(path.resolve(outputPath, 'visual-snapshots-base'), {
+      withFileTypes: true,
+    });
 
     // make output dir if not exists
     const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
-    if (!fs.existsSync(diffPath)) {
-      fs.mkdirSync(diffPath);
-    }
+    fs.mkdirSync(diffPath);
 
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);
@@ -100,7 +134,7 @@ async function run(): Promise<void> {
           entry.name,
           path.resolve(GITHUB_WORKSPACE, diff),
           path.resolve(GITHUB_WORKSPACE, current, entry.name),
-          path.resolve(GITHUB_WORKSPACE, base, entry.name)
+          path.resolve(outputPath, 'visual-snapshots-base', entry.name)
         );
         missingSnapshots.delete(entry.name);
       } else {

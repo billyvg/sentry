@@ -195,12 +195,12 @@ jobs:
             USE_SNUBA: 1
             TEST_GROUP: ${{ matrix.instance }}
 
-        - name: Debug
-          run: |
-            ls -la
-            ls -la .artifacts
-            git status
-            ls -la .artifacts/visual-snapshots
+        # - name: Debug
+          # run: |
+            # ls -la
+            # ls -la .artifacts
+            # git status
+            # ls -la .artifacts/visual-snapshots
 
         # - name: Save snapshots
           # if: ${{ github.ref == 'refs/heads/master' }}

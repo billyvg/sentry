@@ -36,6 +36,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
+const exec_1 = require("@actions/exec");
 const pngjs_1 = require("pngjs");
 const pixelmatch_1 = __importDefault(require("pixelmatch"));
 const { owner, repo } = github.context.repo;
@@ -90,16 +91,33 @@ function run() {
                 repo,
                 run_id: workflowRun.id,
             });
-            console.log(artifacts);
             core.debug(JSON.stringify(artifacts));
+            // filter artifacts for `visual-snapshots-main`
+            const mainSnapshotArtifact = artifacts.find(artifact => artifact.name === 'visual-snapshots-main');
+            if (!mainSnapshotArtifact) {
+                core.debug('Artifact not found');
+                return;
+            }
+            // Download the artifact
+            const download = yield octokit.actions.downloadArtifact({
+                owner,
+                repo,
+                artifact_id: mainSnapshotArtifact.id,
+                archive_format: 'zip',
+            });
+            core.debug(download.headers.location || '');
+            const outputPath = path_1.default.resolve('/tmp');
+            fs_1.default.mkdirSync(outputPath);
+            yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
+            yield exec_1.exec(`unzip ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.headers.location}`);
             // read dirs
             const currentDir = fs_1.default.readdirSync(current, { withFileTypes: true });
-            const baseDir = fs_1.default.readdirSync(base, { withFileTypes: true });
+            const baseDir = fs_1.default.readdirSync(path_1.default.resolve(outputPath, 'visual-snapshots-base'), {
+                withFileTypes: true,
+            });
             // make output dir if not exists
             const diffPath = path_1.default.resolve(GITHUB_WORKSPACE, diff);
-            if (!fs_1.default.existsSync(diffPath)) {
-                fs_1.default.mkdirSync(diffPath);
-            }
+            fs_1.default.mkdirSync(diffPath);
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
@@ -107,7 +125,7 @@ function run() {
             currentDir.filter(isSnapshot).forEach(entry => {
                 currentSnapshots.set(entry.name, entry);
                 if (baseSnapshots.has(entry.name)) {
-                    createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(GITHUB_WORKSPACE, base, entry.name));
+                    createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(outputPath, 'visual-snapshots-base', entry.name));
                     missingSnapshots.delete(entry.name);
                 }
                 else {
