@@ -32,33 +32,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-env node */
-const fs_1 = __importDefault(require("fs"));
+const fsNs = __importStar(require("fs"));
 const path_1 = __importDefault(require("path"));
 const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
 const exec_1 = require("@actions/exec");
 const pngjs_1 = require("pngjs");
 const pixelmatch_1 = __importDefault(require("pixelmatch"));
+const fs = fsNs.promises;
 const { owner, repo } = github.context.repo;
 const token = core.getInput('githubToken');
 const octokit = github.getOctokit(token);
+const GITHUB_SHA = process.env.GITHUB_SHA || '';
 const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
 function isSnapshot(dirent) {
     // Only png atm
     return dirent.isFile() && dirent.name.endsWith('.png');
 }
 function createDiff(snapshotName, output, file1, file2) {
-    const img1 = pngjs_1.PNG.sync.read(fs_1.default.readFileSync(file1));
-    const img2 = pngjs_1.PNG.sync.read(fs_1.default.readFileSync(file2));
-    const { width, height } = img1;
-    const diff = new pngjs_1.PNG({ width, height });
-    const result = pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, {
-        threshold: 0.1,
+    return __awaiter(this, void 0, void 0, function* () {
+        const img1 = pngjs_1.PNG.sync.read(yield fs.readFile(file1));
+        const img2 = pngjs_1.PNG.sync.read(yield fs.readFile(file2));
+        const { width, height } = img1;
+        const diff = new pngjs_1.PNG({ width, height });
+        const result = pixelmatch_1.default(img1.data, img2.data, diff.data, width, height, {
+            threshold: 0.1,
+        });
+        if (result > 0) {
+            yield fs.writeFile(path_1.default.resolve(output, snapshotName), pngjs_1.PNG.sync.write(diff));
+        }
+        return result;
     });
-    if (result > 0) {
-        fs_1.default.writeFileSync(path_1.default.resolve(output, snapshotName), pngjs_1.PNG.sync.write(diff));
-    }
-    return result;
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -110,19 +114,25 @@ function run() {
             });
             core.debug(JSON.stringify(download));
             const outputPath = path_1.default.resolve('/tmp/visual-snapshots-base');
-            fs_1.default.mkdirSync(outputPath, { recursive: true });
+            try {
+                yield fs.mkdir(outputPath, { recursive: true });
+            }
+            catch (_a) { }
             yield exec_1.exec(`curl -L -o ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')} ${download.url}`);
             yield exec_1.exec(`unzip -d ${outputPath} ${path_1.default.resolve(outputPath, 'visual-snapshots-base.zip')}`);
             // read dirs
-            const currentDir = fs_1.default.readdirSync(current, { withFileTypes: true });
-            const baseDir = fs_1.default.readdirSync(path_1.default.resolve(outputPath), {
-                withFileTypes: true,
-            });
+            const [currentDir, baseDir] = yield Promise.all([
+                fs.readdir(current, { withFileTypes: true }),
+                fs.readdir(path_1.default.resolve(outputPath), {
+                    withFileTypes: true,
+                }),
+            ]);
             // make output dir if not exists
             const diffPath = path_1.default.resolve(GITHUB_WORKSPACE, diff);
-            if (!fs_1.default.existsSync(diffPath)) {
-                fs_1.default.mkdirSync(diffPath, { recursive: true });
+            try {
+                yield fs.mkdir(diffPath, { recursive: true });
             }
+            catch (_b) { }
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
@@ -154,11 +164,32 @@ function run() {
             changedSnapshots.forEach(name => {
                 core.debug(`changed snapshot: ${name}`);
             });
-            if (changedSnapshots.size) {
-                core.setFailed(`The following visual snapshots have been changed: ${[...changedSnapshots].join(', ')}`);
-            }
-            if (missingSnapshots.size) {
-                core.setFailed(`The following visual snapshots are missing: ${[...changedSnapshots].join(', ')}`);
+            let hasRelease = false;
+            if (changedSnapshots.size || newSnapshots.size) {
+                // Create a release to store our diffed images
+                const { data: release } = yield octokit.repos.createRelease({
+                    owner,
+                    repo,
+                    tag_name: `visual-snapshot-${GITHUB_SHA}`,
+                    target_commitish: GITHUB_SHA,
+                    name: 'Visual Snapshot Artifacts',
+                    body: 'Testing',
+                    draft: true,
+                    prerelease: true,
+                });
+                const diffFiles = yield fs.readdir(diffPath, {
+                    withFileTypes: true,
+                });
+                diffFiles.filter(isSnapshot).forEach((entry) => __awaiter(this, void 0, void 0, function* () {
+                    yield octokit.repos.uploadReleaseAsset({
+                        owner,
+                        repo,
+                        release_id: release.id,
+                        origin: release.upload_url,
+                        data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
+                    });
+                }));
+                hasRelease = true;
             }
             const conclusion = !!changedSnapshots.size || !!missingSnapshots.size
                 ? 'failure'
@@ -166,21 +197,29 @@ function run() {
                     ? 'neutral'
                     : 'success';
             // Create a GitHub check with our results
-            octokit.checks.create({
+            yield octokit.checks.create({
                 owner,
                 repo,
                 name: 'Visual Snapshot',
-                head_sha: process.env.GITHUB_SHA || '',
+                head_sha: GITHUB_SHA,
                 status: 'completed',
                 conclusion,
                 output: {
                     title: 'Visual Snapshots',
                     summary: `Summary:
 * **${changedSnapshots.size}** changed snapshots
-* **${newSnapshots.size}** new snapshots
 * **${missingSnapshots.size}** missing snapshots
+* **${newSnapshots.size}** new snapshots
 `,
-                    text: `TBD
+                    text: `
+## Changed snapshots
+${[...changedSnapshots].map(name => `* ${name}`).join('\n')}
+
+## Missing snapshots
+${[...missingSnapshots].map(name => `* ${name}`).join('\n')}
+
+## New snapshots
+${[...newSnapshots].map(name => `* ${name}`).join('\n')}
 `,
                 },
             });

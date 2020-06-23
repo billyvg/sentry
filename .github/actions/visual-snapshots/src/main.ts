@@ -1,5 +1,5 @@
 /* eslint-env node */
-import fs from 'fs';
+import * as fsNs from 'fs';
 import path from 'path';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
@@ -8,19 +8,26 @@ import {exec} from '@actions/exec';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
+const fs = fsNs.promises;
 const {owner, repo} = github.context.repo;
 const token = core.getInput('githubToken');
 const octokit = github.getOctokit(token);
+const GITHUB_SHA = process.env.GITHUB_SHA || '';
 const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
 
-function isSnapshot(dirent: fs.Dirent) {
+function isSnapshot(dirent: fsNs.Dirent) {
   // Only png atm
   return dirent.isFile() && dirent.name.endsWith('.png');
 }
 
-function createDiff(snapshotName: string, output: string, file1: string, file2: string) {
-  const img1 = PNG.sync.read(fs.readFileSync(file1));
-  const img2 = PNG.sync.read(fs.readFileSync(file2));
+async function createDiff(
+  snapshotName: string,
+  output: string,
+  file1: string,
+  file2: string
+) {
+  const img1 = PNG.sync.read(await fs.readFile(file1));
+  const img2 = PNG.sync.read(await fs.readFile(file2));
   const {width, height} = img1;
   const diff = new PNG({width, height});
 
@@ -29,7 +36,7 @@ function createDiff(snapshotName: string, output: string, file1: string, file2: 
   });
 
   if (result > 0) {
-    fs.writeFileSync(path.resolve(output, snapshotName), PNG.sync.write(diff));
+    await fs.writeFile(path.resolve(output, snapshotName), PNG.sync.write(diff));
   }
 
   return result;
@@ -48,9 +55,9 @@ async function run(): Promise<void> {
 
     const newSnapshots = new Set<string>([]);
     const changedSnapshots = new Set<string>([]);
-    const missingSnapshots = new Map<string, fs.Dirent>([]);
-    const currentSnapshots = new Map<string, fs.Dirent>([]);
-    const baseSnapshots = new Map<string, fs.Dirent>([]);
+    const missingSnapshots = new Map<string, fsNs.Dirent>([]);
+    const currentSnapshots = new Map<string, fsNs.Dirent>([]);
+    const baseSnapshots = new Map<string, fsNs.Dirent>([]);
 
     // fetch artifact from main branch
     // this is hacky since github actions do not support downloading
@@ -103,7 +110,10 @@ async function run(): Promise<void> {
     core.debug(JSON.stringify(download));
 
     const outputPath = path.resolve('/tmp/visual-snapshots-base');
-    fs.mkdirSync(outputPath, {recursive: true});
+    try {
+      await fs.mkdir(outputPath, {recursive: true});
+    } catch {}
+
     await exec(
       `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
         download.url
@@ -114,17 +124,19 @@ async function run(): Promise<void> {
     );
 
     // read dirs
-    const currentDir = fs.readdirSync(current, {withFileTypes: true});
-    const baseDir = fs.readdirSync(path.resolve(outputPath), {
-      withFileTypes: true,
-    });
+    const [currentDir, baseDir] = await Promise.all([
+      fs.readdir(current, {withFileTypes: true}),
+      fs.readdir(path.resolve(outputPath), {
+        withFileTypes: true,
+      }),
+    ]);
 
     // make output dir if not exists
     const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
 
-    if (!fs.existsSync(diffPath)) {
-      fs.mkdirSync(diffPath, {recursive: true});
-    }
+    try {
+      await fs.mkdir(diffPath, {recursive: true});
+    } catch {}
 
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);
@@ -166,18 +178,36 @@ async function run(): Promise<void> {
       core.debug(`changed snapshot: ${name}`);
     });
 
-    if (changedSnapshots.size) {
-      core.setFailed(
-        `The following visual snapshots have been changed: ${[...changedSnapshots].join(
-          ', '
-        )}`
-      );
-    }
+    let hasRelease = false;
+    if (changedSnapshots.size || newSnapshots.size) {
+      // Create a release to store our diffed images
+      const {data: release} = await octokit.repos.createRelease({
+        owner,
+        repo,
+        tag_name: `visual-snapshot-${GITHUB_SHA}`,
+        target_commitish: GITHUB_SHA,
+        name: 'Visual Snapshot Artifacts',
+        body: 'Testing',
+        draft: true,
+        prerelease: true,
+      });
 
-    if (missingSnapshots.size) {
-      core.setFailed(
-        `The following visual snapshots are missing: ${[...changedSnapshots].join(', ')}`
-      );
+      const diffFiles = await fs.readdir(diffPath, {
+        withFileTypes: true,
+      });
+      diffFiles.filter(isSnapshot).forEach(async entry => {
+        await octokit.repos.uploadReleaseAsset({
+          owner,
+          repo,
+          release_id: release.id,
+          origin: release.upload_url,
+          data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
+            'base64'
+          ),
+        });
+      });
+
+      hasRelease = true;
     }
 
     const conclusion =
@@ -188,21 +218,29 @@ async function run(): Promise<void> {
         : 'success';
 
     // Create a GitHub check with our results
-    octokit.checks.create({
+    await octokit.checks.create({
       owner,
       repo,
       name: 'Visual Snapshot',
-      head_sha: process.env.GITHUB_SHA || '',
+      head_sha: GITHUB_SHA,
       status: 'completed',
       conclusion,
       output: {
         title: 'Visual Snapshots',
         summary: `Summary:
 * **${changedSnapshots.size}** changed snapshots
-* **${newSnapshots.size}** new snapshots
 * **${missingSnapshots.size}** missing snapshots
+* **${newSnapshots.size}** new snapshots
 `,
-        text: `TBD
+        text: `
+## Changed snapshots
+${[...changedSnapshots].map(name => `* ${name}`).join('\n')}
+
+## Missing snapshots
+${[...missingSnapshots].map(name => `* ${name}`).join('\n')}
+
+## New snapshots
+${[...newSnapshots].map(name => `* ${name}`).join('\n')}
 `,
       },
     });
