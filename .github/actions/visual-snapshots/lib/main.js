@@ -193,13 +193,15 @@ function run() {
                     });
                     yield Promise.all(diffFiles.filter(isSnapshot).map((entry) => __awaiter(this, void 0, void 0, function* () {
                         core.debug(`Diff file: ${entry.name}`);
+                        const bytes = yield fs.readFile(path_1.default.resolve(diffPath, entry.name), 'binary');
+                        const buffer = Buffer.from(bytes, 'binary');
                         return yield octokit.repos.uploadReleaseAsset({
                             owner,
                             repo,
                             release_id: release.id,
                             origin: release.upload_url,
                             name: entry.name,
-                            data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
+                            data: buffer.toString('base64'),
                             headers: {
                                 'content-type': 'image/png',
                             },

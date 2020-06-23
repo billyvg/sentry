@@ -215,15 +215,15 @@ async function run(): Promise<void> {
         diffFiles.filter(isSnapshot).map(async entry => {
           core.debug(`Diff file: ${entry.name}`);
 
+          const bytes = await fs.readFile(path.resolve(diffPath, entry.name), 'binary');
+          const buffer = Buffer.from(bytes, 'binary');
           return await octokit.repos.uploadReleaseAsset({
             owner,
             repo,
             release_id: release.id,
             origin: release.upload_url,
             name: entry.name,
-            data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
-              'base64'
-            ),
+            data: buffer.toString('base64'),
             headers: {
               'content-type': 'image/png',
             },
