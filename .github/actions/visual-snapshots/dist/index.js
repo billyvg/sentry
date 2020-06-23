@@ -2399,7 +2399,7 @@ function run() {
 ${[...changedSnapshots].map(name => `* ${name}`).join('\n')}
 
 ## Missing snapshots
-${[...missingSnapshots].map(name => `* ${name}`).join('\n')}
+${[...missingSnapshots].map(([name]) => `* ${name}`).join('\n')}
 
 ## New snapshots
 ${[...newSnapshots].map(name => `* ${name}`).join('\n')}
