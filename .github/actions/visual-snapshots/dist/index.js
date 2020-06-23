@@ -2237,6 +2237,7 @@ function createDiff(snapshotName, output, file1, file2) {
     if (result > 0) {
         fs_1.default.writeFileSync(path_1.default.resolve(output, snapshotName), pngjs_1.PNG.sync.write(diff));
     }
+    return result;
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -2249,6 +2250,7 @@ function run() {
             core.debug(GITHUB_WORKSPACE);
             core.setOutput('diff-path', diff);
             const newSnapshots = new Set([]);
+            const changedSnapshots = new Set([]);
             const missingSnapshots = new Map([]);
             const currentSnapshots = new Map([]);
             const baseSnapshots = new Map([]);
@@ -2299,9 +2301,6 @@ function run() {
             if (!fs_1.default.existsSync(diffPath)) {
                 fs_1.default.mkdirSync(diffPath, { recursive: true });
             }
-            core.debug('basedir');
-            core.debug(JSON.stringify(baseDir));
-            yield exec_1.exec('ls /tmp/visual-snapshots-base');
             baseDir.filter(isSnapshot).forEach(entry => {
                 baseSnapshots.set(entry.name, entry);
                 missingSnapshots.set(entry.name, entry);
@@ -2309,7 +2308,10 @@ function run() {
             currentDir.filter(isSnapshot).forEach(entry => {
                 currentSnapshots.set(entry.name, entry);
                 if (baseSnapshots.has(entry.name)) {
-                    createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(outputPath, entry.name));
+                    const isDiff = createDiff(entry.name, path_1.default.resolve(GITHUB_WORKSPACE, diff), path_1.default.resolve(GITHUB_WORKSPACE, current, entry.name), path_1.default.resolve(outputPath, entry.name));
+                    if (isDiff) {
+                        changedSnapshots.add(entry.name);
+                    }
                     missingSnapshots.delete(entry.name);
                 }
                 else {
@@ -2321,6 +2323,9 @@ function run() {
             });
             newSnapshots.forEach(entryName => {
                 core.debug(`new snapshot: ${entryName}`);
+            });
+            changedSnapshots.forEach(name => {
+                core.debug(`changed snapshot: ${name}`);
             });
         }
         catch (error) {

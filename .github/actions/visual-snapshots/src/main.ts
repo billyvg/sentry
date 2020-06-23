@@ -1,7 +1,6 @@
 /* eslint-env node */
 import fs from 'fs';
 import path from 'path';
-
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import {exec} from '@actions/exec';
@@ -32,6 +31,8 @@ function createDiff(snapshotName: string, output: string, file1: string, file2: 
   if (result > 0) {
     fs.writeFileSync(path.resolve(output, snapshotName), PNG.sync.write(diff));
   }
+
+  return result;
 }
 
 async function run(): Promise<void> {
@@ -46,6 +47,7 @@ async function run(): Promise<void> {
     core.setOutput('diff-path', diff);
 
     const newSnapshots = new Set<string>([]);
+    const changedSnapshots = new Set<string>([]);
     const missingSnapshots = new Map<string, fs.Dirent>([]);
     const currentSnapshots = new Map<string, fs.Dirent>([]);
     const baseSnapshots = new Map<string, fs.Dirent>([]);
@@ -122,10 +124,6 @@ async function run(): Promise<void> {
       fs.mkdirSync(diffPath, {recursive: true});
     }
 
-    core.debug('basedir');
-    core.debug(JSON.stringify(baseDir));
-    await exec('ls /tmp/visual-snapshots-base');
-
     baseDir.filter(isSnapshot).forEach(entry => {
       baseSnapshots.set(entry.name, entry);
       missingSnapshots.set(entry.name, entry);
@@ -135,12 +133,15 @@ async function run(): Promise<void> {
       currentSnapshots.set(entry.name, entry);
 
       if (baseSnapshots.has(entry.name)) {
-        createDiff(
+        const isDiff = createDiff(
           entry.name,
           path.resolve(GITHUB_WORKSPACE, diff),
           path.resolve(GITHUB_WORKSPACE, current, entry.name),
           path.resolve(outputPath, entry.name)
         );
+        if (isDiff) {
+          changedSnapshots.add(entry.name);
+        }
         missingSnapshots.delete(entry.name);
       } else {
         newSnapshots.add(entry.name);
@@ -153,6 +154,10 @@ async function run(): Promise<void> {
 
     newSnapshots.forEach(entryName => {
       core.debug(`new snapshot: ${entryName}`);
+    });
+
+    changedSnapshots.forEach(name => {
+      core.debug(`changed snapshot: ${name}`);
     });
   } catch (error) {
     core.setFailed(error.message);
