@@ -117,7 +117,10 @@ async function run(): Promise<void> {
 
     // make output dir if not exists
     const diffPath = path.resolve(GITHUB_WORKSPACE, diff);
-    fs.mkdirSync(diffPath);
+
+    if (!fs.existsSync(diffPath)) {
+      fs.mkdirSync(diffPath, {recursive: true});
+    }
 
     core.debug('basedir');
     core.debug(JSON.stringify(baseDir));
