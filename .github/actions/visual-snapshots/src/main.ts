@@ -215,6 +215,7 @@ async function run(): Promise<void> {
           repo,
           release_id: release.id,
           origin: release.upload_url,
+          name: entry.name,
           data: (await fs.readFile(path.resolve(diffPath, entry.name))).toString(
             'base64'
           ),

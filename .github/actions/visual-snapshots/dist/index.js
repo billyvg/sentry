@@ -2374,6 +2374,7 @@ function run() {
                         repo,
                         release_id: release.id,
                         origin: release.upload_url,
+                        name: entry.name,
                         data: (yield fs.readFile(path_1.default.resolve(diffPath, entry.name))).toString('base64'),
                     });
                 }));
