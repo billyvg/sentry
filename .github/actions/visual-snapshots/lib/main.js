@@ -34,9 +34,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-env node */
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const github = __importStar(require("@actions/github"));
 const core = __importStar(require("@actions/core"));
 const pngjs_1 = require("pngjs");
 const pixelmatch_1 = __importDefault(require("pixelmatch"));
+const { owner, repo } = github.context.repo;
+const token = core.getInput('githubToken');
+const octokit = github.getOctokit(token);
 const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
 function isSnapshot(dirent) {
     // Only png atm
@@ -68,6 +72,26 @@ function run() {
             const missingSnapshots = new Map([]);
             const currentSnapshots = new Map([]);
             const baseSnapshots = new Map([]);
+            // fetch artifact from main branch
+            // this is hacky since github actions do not support downloading
+            // artifacts from different workflows
+            const { data: { workflow_runs: [workflowRun], }, } = yield octokit.actions.listWorkflowRuns({
+                owner,
+                repo,
+                // @ts-ignore
+                workflow_id: 'acceptance.yml',
+                branch: 'master',
+            });
+            if (!workflowRun) {
+                core.debug('No workflow run found');
+            }
+            const { data: { artifacts }, } = yield octokit.actions.listWorkflowRunArtifacts({
+                owner,
+                repo,
+                run_id: workflowRun.id,
+            });
+            console.log(artifacts);
+            core.debug(JSON.stringify(artifacts));
             // read dirs
             const currentDir = fs_1.default.readdirSync(current, { withFileTypes: true });
             const baseDir = fs_1.default.readdirSync(base, { withFileTypes: true });

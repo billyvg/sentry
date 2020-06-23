@@ -8,6 +8,8 @@ inputs:
     description: 'path to the current set of snapshots'
   diff:
     description: 'path to write snapshot diffs'
+  githubToken:
+    description: 'github token'
 runs:
   using: 'node12'
   main: 'dist/index.js'

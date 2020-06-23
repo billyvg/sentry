@@ -2,10 +2,14 @@
 import fs from 'fs';
 import path from 'path';
 
+import * as github from '@actions/github';
 import * as core from '@actions/core';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
+const {owner, repo} = github.context.repo;
+const token = core.getInput('githubToken');
+const octokit = github.getOctokit(token);
 const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || '';
 
 function isSnapshot(dirent: fs.Dirent) {
@@ -43,6 +47,35 @@ async function run(): Promise<void> {
     const missingSnapshots = new Map<string, fs.Dirent>([]);
     const currentSnapshots = new Map<string, fs.Dirent>([]);
     const baseSnapshots = new Map<string, fs.Dirent>([]);
+
+    // fetch artifact from main branch
+    // this is hacky since github actions do not support downloading
+    // artifacts from different workflows
+    const {
+      data: {
+        workflow_runs: [workflowRun],
+      },
+    } = await octokit.actions.listWorkflowRuns({
+      owner,
+      repo,
+      // @ts-ignore
+      workflow_id: 'acceptance.yml',
+      branch: 'master',
+    });
+
+    if (!workflowRun) {
+      core.debug('No workflow run found');
+    }
+
+    const {
+      data: {artifacts},
+    } = await octokit.actions.listWorkflowRunArtifacts({
+      owner,
+      repo,
+      run_id: workflowRun.id,
+    });
+
+    core.debug(JSON.stringify(artifacts));
 
     // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});

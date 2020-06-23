@@ -202,28 +202,29 @@ jobs:
             git status
             ls -la .artifacts/visual-snapshots
 
-        - name: Save snapshots
-          if: ${{ github.ref == 'refs/heads/master' }}
-          uses: actions/upload-artifact@v2
-          with:
-            name: visual-snapshots-main
-            path: .artifacts/visual-snapshots
+        # - name: Save snapshots
+          # if: ${{ github.ref == 'refs/heads/master' }}
+          # uses: actions/upload-artifact@v2
+          # with:
+            # name: visual-snapshots-main
+            # path: .artifacts/visual-snapshots
 
-        - name: Download main snapshots
-          if: ${{ github.ref }} != refs/heads/master
-          uses: actions/download-artifact@v2
-          with:
-            name: visual-snapshots-main
-            path: .artifacts/visual-snapshots-base-ref
+        # - name: Download main snapshots
+          # if: ${{ github.ref }} != refs/heads/master
+          # uses: actions/download-artifact@v2
+          # with:
+            # name: visual-snapshots-main
+            # path: .artifacts/visual-snapshots-base-ref
 
-        - name: Display structure of downloaded files
-          run: |
-            ls -la .artifacts/visual-snapshots-base-ref
+        # - name: Display structure of downloaded files
+          # run: |
+            # ls -la .artifacts/visual-snapshots-base-ref
 
         - name: Diff snapshots
           id: visual-snapshots-diff
           uses: ./.github/actions/visual-snapshots
           with:
+            githubToken: ${{ secrets.GITHUB_TOKEN }}
             base: .artifacts/visual-snapshots-base-ref
             current: .artifacts/visual-snapshots
             diff: .artifacts/visual-snapshots-diff
