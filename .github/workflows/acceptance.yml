@@ -118,14 +118,6 @@ jobs:
             echo "::set-output name=python-version::2.7"
             echo "::set-output name=matrix-instance-number::$(($MATRIX_INSTANCE+1))"
 
-        - name: Diff snapshots
-          uses: ./.github/actions/visual-snapshots
-          with:
-            githubToken: ${{ secrets.GITHUB_TOKEN }}
-            base: .artifacts/visual-snapshots-base-ref
-            current: .artifacts/visual-snapshots
-            diff: .artifacts/visual-snapshots-diff
-
 
         # yarn cache
         - uses: actions/cache@v1
