@@ -120,6 +120,7 @@ jobs:
 
 
         - name: Diff snapshots
+          id: visual-snapshots-diff
           uses: ./.github/actions/visual-snapshots
           with:
             githubToken: ${{ secrets.GITHUB_TOKEN }}
