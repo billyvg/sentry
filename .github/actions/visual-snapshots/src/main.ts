@@ -98,7 +98,8 @@ async function run(): Promise<void> {
 
     core.debug(JSON.stringify(download));
 
-    const outputPath = path.resolve('/tmp');
+    const outputPath = path.resolve('/tmp/visual-snapshots-base');
+    fs.mkdirSync(outputPath, {recursive: true});
     await exec(
       `curl -L -o ${path.resolve(outputPath, 'visual-snapshots-base.zip')} ${
         download.url
@@ -108,7 +109,7 @@ async function run(): Promise<void> {
 
     // read dirs
     const currentDir = fs.readdirSync(current, {withFileTypes: true});
-    const baseDir = fs.readdirSync(path.resolve(outputPath, 'visual-snapshots-base'), {
+    const baseDir = fs.readdirSync(path.resolve(outputPath), {
       withFileTypes: true,
     });
 
@@ -129,7 +130,7 @@ async function run(): Promise<void> {
           entry.name,
           path.resolve(GITHUB_WORKSPACE, diff),
           path.resolve(GITHUB_WORKSPACE, current, entry.name),
-          path.resolve(outputPath, 'visual-snapshots-base', entry.name)
+          path.resolve(outputPath, entry.name)
         );
         missingSnapshots.delete(entry.name);
       } else {
