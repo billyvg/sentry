@@ -198,7 +198,7 @@ jobs:
         - name: Run acceptance tests (#${{ steps.config.outputs.matrix-instance-number }} of ${{ strategy.job-total }})
           if: always()
           run: |
-            mkdir .artifacts/visual-snapshots
+            # mkdir .artifacts/visual-snapshots
             make run-acceptance
           env:
             USE_SNUBA: 1
