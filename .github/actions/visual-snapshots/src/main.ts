@@ -146,8 +146,6 @@ async function run(): Promise<void> {
           );
           if (isDiff) {
             changedSnapshots.add(entry.name);
-          } else {
-            core.debug(`no change detected: ${entry.name}`);
           }
           missingSnapshots.delete(entry.name);
         } catch (err) {
@@ -158,7 +156,6 @@ async function run(): Promise<void> {
       }
     });
 
-    await exec(`ls ${path.resolve(GITHUB_WORKSPACE, diff)}`);
     missingSnapshots.forEach(entry => {
       core.debug(`missing snapshot: ${entry.name}`);
     });
@@ -170,6 +167,20 @@ async function run(): Promise<void> {
     changedSnapshots.forEach(name => {
       core.debug(`changed snapshot: ${name}`);
     });
+
+    if (changedSnapshots.size) {
+      core.setFailed(
+        `The following visual snapshots have been changed: ${[...changedSnapshots].join(
+          ', '
+        )}`
+      );
+    }
+
+    if (missingSnapshots.size) {
+      core.setFailed(
+        `The following visual snapshots are missing: ${[...changedSnapshots].join(', ')}`
+      );
+    }
   } catch (error) {
     core.setFailed(error.message);
   }

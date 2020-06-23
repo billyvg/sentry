@@ -251,9 +251,9 @@ jobs:
             # current: .artifacts/visual-snapshots
             # diff: .artifacts/visual-snapshots-diff
 
-        # - name: Upload snapshot diffs
-          # if: ${{ github.ref }} != refs/heads/master
-          # uses: actions/upload-artifact@v2
-          # with:
-            # name: visual-snapshots-diff
-            # path: ${{ steps.visual-snapshots-diff.outputs.diff-path }}
+        - name: Upload snapshot diffs
+          if: ${{ github.ref }} != refs/heads/master
+          uses: actions/upload-artifact@v2
+          with:
+            name: visual-snapshots-diff
+            path: ${{ steps.visual-snapshots-diff.outputs.diff-path }}
