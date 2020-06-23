@@ -2398,7 +2398,7 @@ function run() {
                     repo,
                     release_id: release.id,
                 });
-                releaseWithArtifacts.assets;
+                console.log(releaseWithArtifacts.assets);
                 diffArtifactUrls = releaseWithArtifacts.assets.map(({ name, url }) => ({
                     alt: name,
                     image_url: url,
