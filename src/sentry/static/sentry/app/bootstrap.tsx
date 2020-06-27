@@ -37,6 +37,79 @@ if (NODE_ENV === 'development') {
   );
 }
 
+// if (process.env.IS_CI) {
+// window.__SENTRY_TEST_ANIMATIONS = new Set(['__mutation']);
+
+// // Callback function to execute when mutations are observed
+// // Create an observer instance linked to the callback function
+
+// const animationStartHandler = e => {
+// window.__SENTRY_TEST_ANIMATIONS.add(e.target);
+// };
+
+// const animationEndHandler = e => {
+// window.__SENTRY_TEST_ANIMATIONS.delete(e.target);
+// };
+// window.addEventListener('animationstart', animationStartHandler);
+// window.addEventListener('animationend', animationEndHandler);
+// window.addEventListener('transitionstart', animationStartHandler);
+// window.addEventListener('transitionend', animationEndHandler);
+
+// let _mutationDebouncebounce;
+// // Callback function to execute when mutations are observed
+// // Create an observer instance linked to the callback function
+// const observer = new MutationObserver(function(mutationsList) {
+// window.__SENTRY_TEST_ANIMATIONS.add('__mutation');
+
+// if (_mutationDebouncebounce) {
+// window.clearTimeout(_mutationDebouncebounce);
+// }
+// _mutationDebouncebounce = window.setTimeout(
+// () => window.__SENTRY_TEST_ANIMATIONS.delete('__mutation'),
+// 150
+// );
+
+// mutationsList.forEach(mutation => {
+// mutation.addedNodes.forEach(node => {
+// if (typeof (node as HTMLElement).querySelectorAll !== 'function') {
+// return;
+// }
+
+// (node as HTMLElement).querySelectorAll('object').forEach(objEl => {
+// objEl.addEventListener('load', () => {
+// objEl?.contentDocument?.querySelectorAll('svg').forEach(svgEl => {
+// svgEl.addEventListener('animationstart', animationStartHandler);
+// svgEl.addEventListener('animationend', animationEndHandler);
+// });
+// });
+// });
+// });
+
+// mutation.removedNodes.forEach(node => {
+// if (window.__SENTRY_TEST_ANIMATIONS.has(node as HTMLElement)) {
+// window.__SENTRY_TEST_ANIMATIONS.delete(node as HTMLElement);
+// return;
+// }
+
+// const child = Array.from(window.__SENTRY_TEST_ANIMATIONS.keys()).find(
+// animationTarget =>
+// animationTarget instanceof HTMLElement && node.contains(animationTarget)
+// );
+// if (child) {
+// window.__SENTRY_TEST_ANIMATIONS.delete(child);
+// }
+// });
+// });
+// });
+
+// document.addEventListener('readystatechange', function(e) {
+// // eslint-disable-next-line
+// console.log('readystatechange', e);
+// });
+// // Start observing the target node for configured mutations
+// observer.observe(document, {childList: true, subtree: true});
+// }
+
 // App setup
 if (window.__initialData) {
   ConfigStore.loadInitialData(window.__initialData);

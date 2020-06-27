@@ -68,7 +68,7 @@ class IncidentRulesList extends AsyncView<Props, State> {
     return (
       <Panel>
         <GridPanelHeader>
-          <NameColumn>{t('Name')}</NameColumn>
+          <NameColumn>{t('UH OH')}</NameColumn>
 
           <div>{t('Metric')}</div>
 

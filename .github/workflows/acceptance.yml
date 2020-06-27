@@ -11,7 +11,7 @@ jobs:
       continue-on-error: true
       strategy:
         matrix:
-          instance: [0, 1, 2]
+          instance: [0, 1, 2, 3]
 
       env:
         PIP_DISABLE_PIP_VERSION_CHECK: on
@@ -103,6 +103,18 @@ jobs:
       steps:
         # Checkout codebase
         - uses: actions/checkout@v2
+
+        # - name: Diff snapshots
+          # if: ${{ github.ref != 'refs/heads/master' }}
+          # id: visual-snapshots-diff
+          # uses: getsentry/action-visual-snapshot@v1-alpha
+          # with:
+            # githubToken: ${{ secrets.GITHUB_TOKEN }}
+            # base-workflow-id: 'acceptance.yml'
+            # snapshot-path: .artifacts/visual-snapshots
+            # diff-path: .artifacts/visual-snapshots-diff
+            # gcs-bucket: 'sentry-visual-snapshots'
+            # gcp-service-account-key: ${{ secrets.DEV_TOOLING_GOOGLE_SERVICE_ACCOUNT_KEY }}
 
         # Install node
         - uses: volta-cli/action@v1

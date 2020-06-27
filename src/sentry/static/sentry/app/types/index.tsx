@@ -34,6 +34,9 @@ declare global {
      * Sentrys version string
      */
     __SENTRY__VERSION?: string;
+
+    __SENTRY_TEST_ANIMATIONS: Set<HTMLElement | string>;
+
     /**
      * The CSRF cookie ised on the backend
      */
