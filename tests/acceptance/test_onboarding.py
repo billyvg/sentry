@@ -31,12 +31,14 @@ class OrganizationOnboardingTest(AcceptanceTestCase):
 
         # Platform selection step
         self.browser.click('[data-test-id="welcome-next"]')
+        time.sleep(0.25)
         self.browser.wait_until('[data-test-id="onboarding-step-select-platform"]')
 
         self.browser.snapshot(name="onboarding - select platform")
 
         # Select and create node JS project
         self.browser.click('[data-test-id="platform-node"]')
+        time.sleep(0.25)
         self.browser.wait_until_not('[data-test-id="platform-select-next"][aria-disabled="true"]')
         self.browser.wait_until('[data-test-id="platform-select-next"][aria-disabled="false"]')
 
