@@ -173,7 +173,7 @@ class IncidentsList extends AsyncComponent<Props, State & AsyncComponent['state'
     const actions = (
       <React.Fragment>
         <Button size="small" external href={DOCS_URL}>
-          {t('View Features')}
+          {t('See all of the Features')}
         </Button>
         <AddAlertRuleButton {...this.props} />
       </React.Fragment>
