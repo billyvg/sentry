@@ -190,6 +190,15 @@ class Browser(object):
 
         return self
 
+    def blur(self):
+        """
+        Find focused elements and call blur. Useful for snapshot testing that can potentially capture
+        the text cursor blinking
+        """
+        self.driver.execute_script("document.querySelectorAll(':focus').forEach(el => el.blur())")
+
+        return self
+
     @property
     def switch_to(self):
         return self.driver.switch_to
