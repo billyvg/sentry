@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import time
-
 from sentry.utils.compat import mock
 from selenium.common.exceptions import TimeoutException
 
@@ -31,14 +29,12 @@ class OrganizationOnboardingTest(AcceptanceTestCase):
 
         # Platform selection step
         self.browser.click('[data-test-id="welcome-next"]')
-        time.sleep(0.25)
         self.browser.wait_until('[data-test-id="onboarding-step-select-platform"]')
 
         self.browser.snapshot(name="onboarding - select platform")
 
         # Select and create node JS project
         self.browser.click('[data-test-id="platform-node"]')
-        time.sleep(0.25)
         self.browser.wait_until_not('[data-test-id="platform-select-next"][aria-disabled="true"]')
         self.browser.wait_until('[data-test-id="platform-select-next"][aria-disabled="false"]')
 
@@ -46,11 +42,9 @@ class OrganizationOnboardingTest(AcceptanceTestCase):
         def click_platform_select_name(browser):
             browser.click('[data-test-id="platform-select-next"]')
             # Project getting started
-            time.sleep(0.25)
             browser.wait_until('[data-test-id="onboarding-step-get-started"]')
 
         click_platform_select_name(self.browser)
-        time.sleep(0.25)
         self.browser.snapshot(name="onboarding - get started")
 
         # Verify project was created for org
@@ -59,12 +53,10 @@ class OrganizationOnboardingTest(AcceptanceTestCase):
         assert project.platform == "node"
 
         self.browser.click('[data-test-id="onboarding-getting-started-invite-members"]')
-        time.sleep(0.25)
         self.browser.wait_until('[name="email"]')
 
         self.browser.snapshot(name="onboarding - invite members")
 
         self.browser.click('[data-test-id="onboarding-getting-started-learn-more"]')
-        time.sleep(0.25)
         self.browser.wait_until_not('[name="email"]')
         self.browser.snapshot(name="onboarding - learn more")
