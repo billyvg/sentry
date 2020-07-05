@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import time
 
 from sentry.testutils import AcceptanceTestCase
 from sentry.models import SentryAppInstallation
@@ -44,6 +45,7 @@ class OrganizationSentryAppDetailedView(AcceptanceTestCase):
 
         self.load_page(self.sentry_app.slug)
         self.browser.snapshot("integrations - sentry app detail installed")
+        time.sleep(0.500)
 
         detail_view_page = OrganizationSentryAppDetailViewPage(browser=self.browser)
 
