@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import time
+
 from sentry.testutils import AcceptanceTestCase
 
 
@@ -16,6 +18,7 @@ class AuthTest(AcceptanceTestCase):
 
     def test_no_credentials(self):
         self.enter_auth("", "")
+        time.sleep(1)
         self.browser.snapshot(name="login fields required")
 
     def test_invalid_credentials(self):
