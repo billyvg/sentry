@@ -29,7 +29,7 @@ describe('Source', () => {
   it('default render', () => {
     const wrapper = renderComponent({});
     expect(wrapper.find('input').prop('value')).toBe('$string');
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper).toSnapshot();
   });
 
   it('display defaultSuggestions if input is empty and focused', () => {
