@@ -1,4 +1,3 @@
-/* global process */
 import {browserHistory} from 'react-router';
 import DocumentTitle from 'react-document-title';
 import PropTypes from 'prop-types';
