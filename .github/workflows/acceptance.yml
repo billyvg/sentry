@@ -214,7 +214,7 @@ jobs:
         - name: Save snapshots
           if: always()
           id: visual-snaptop-save
-          uses: getsentry/action-visual-snapshot@v1-dev
+          uses: getsentry/action-visual-snapshot@v2-dev
           with:
             save-only: true
             snapshot-path: .artifacts/visual-snapshots
@@ -234,7 +234,7 @@ jobs:
 
         - name: Diff snapshots
           id: visual-snapshots-diff
-          uses: getsentry/action-visual-snapshot@v1-dev
+          uses: getsentry/action-visual-snapshot@v2-dev
           with:
             githubToken: ${{ secrets.GITHUB_TOKEN }}
             gcs-bucket: 'sentry-visual-snapshots'
