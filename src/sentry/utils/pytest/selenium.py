@@ -363,7 +363,7 @@ def pytest_addoption(parser):
         help="selenium driver (chrome, phantomjs, or firefox)",
     )
     group._addoption(
-        "--window-size", dest="window_size", help="window size (WIDTHxHEIGHT)", default="1680x1050"
+        "--window-size", dest="window_size", help="window size (WIDTHxHEIGHT)", default="1280x720"
     )
     group._addoption("--phantomjs-path", dest="phantomjs_path", help="path to phantomjs driver")
     group._addoption("--chrome-path", dest="chrome_path", help="path to google-chrome")
