@@ -8,6 +8,8 @@ on:
 jobs:
     jest:
       runs-on: ubuntu-latest
+      env:
+        VISUAL_SNAPSHOT_ENABLE: 1
       steps:
         # Checkout codebase
         - uses: actions/checkout@v1
@@ -41,7 +43,8 @@ jobs:
 
         - name: jest
           run: |
-            yarn test
+            NODE_ENV=production yarn build-css
+            yarn test-ci-snapshots
 
         - name: Save snapshots
           if: always()
