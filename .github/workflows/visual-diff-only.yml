@@ -1,4 +1,4 @@
-name: acceptance
+name: visual-diff
 on:
   workflow_dispatch:
     inputs:
