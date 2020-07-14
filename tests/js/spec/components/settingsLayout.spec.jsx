@@ -56,7 +56,7 @@ describe('SettingsLayout', function() {
 
   it('can toggle mobile navigation', function() {
     const Navigation = () => <div>Navigation</div>;
-    const wrapper = shallow(
+    const wrapper = mountWithTheme(
       <SettingsLayout
         router={TestStubs.router()}
         route={{}}
