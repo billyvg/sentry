@@ -1,0 +1,29 @@
+name: visual-diff
+on:
+  workflow_dispatch:
+    inputs:
+      mergeBaseSha:
+        description: 'The commit sha where the branch occurred'
+        required: false
+      baseSha:
+        description: 'The base commit sha to compare to'
+        required: true
+      headSha:
+        description: 'The head commit sha'
+        required: true
+
+jobs:
+    visual-diff:
+      runs-on: ubuntu-16.04
+
+      steps:
+        - name: Diff snapshots
+          id: visual-snapshots-diff
+          uses: getsentry/action-visual-snapshot@v2-dev
+          with:
+            githubToken: ${{ secrets.GITHUB_TOKEN }}
+            gcs-bucket: 'sentry-visual-snapshots'
+            gcp-service-account-key: ${{ secrets.SNAPSHOT_GOOGLE_SERVICE_ACCOUNT_KEY }}
+            mergeBaseSha: ${{ github.event.inputs.mergeBaseSha }}
+            baseSha: ${{ github.event.inputs.baseSha }}
+            headSha: ${{ github.event.inputs.headSha }}
