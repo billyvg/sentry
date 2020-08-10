@@ -11,7 +11,7 @@ jobs:
     name: Ensure docker image
     runs-on: ubuntu-latest
     steps:
-    - run: echo $GITHUB_WORKSPACE
+    - run: echo $HOME
 
     - name: Checkout sentry
       uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       with:
         repository: getsentry/getsentry
         token: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
-        path: ${{ RUNNER_WORKSPACE }}/getsentry
+        path: ${{ HOME }}/getsentry
 
     - name: Install gcloud utils
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
