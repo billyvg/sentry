@@ -164,10 +164,10 @@ jobs:
         echo '{"experimental": "enabled"}' > $HOME/.docker/config.json
         gcloud auth configure-docker --quiet
     - run: |
-        getsentry/bin/bump-sentry ${{ github.sha }}
+        cd getsentry && bin/bump-sentry ${{ github.sha }}
 
     - name: Collect dependencies
-      run: getsentry/bin/test-utils/collect_deps
+      run: cd getsentry && bin/test-utils/collect_deps
 
     - name: Before tests
       run: |
@@ -180,4 +180,4 @@ jobs:
         TEST_GROUP_STRATEGY: ${{ matrix.group-strategy }}
         TEST_GROUP: ${{ matrix.instance }}
       run: |
-        getsentry/bin/test-utils/docker_run_tests make ci-test-${{ matrix.job }}
+        cd getsentry && bin/test-utils/docker_run_tests make ci-test-${{ matrix.job }}
