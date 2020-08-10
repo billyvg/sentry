@@ -13,11 +13,16 @@ jobs:
     steps:
     - name: Checkout sentry
       uses: actions/checkout@v2
+    - name: getsentry token
+      id: getsentry
+      uses: './.github/actions/action-getsentry-checkout'
+      with:
+        privateKey: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
     - name: Checkout getsentry
       uses: actions/checkout@v2
       with:
         repository: getsentry/getsentry
-        token: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
+        token: ${{ steps.getsentry.output.token }}
 
     - name: Install gcloud utils
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -47,12 +52,9 @@ jobs:
         # can't use `strategy.job-total` with nested matrices :/
         # This means we may need to split acceptance and sentry-plugins if we wanted
         # each one to have different number of groups
-        job: [acceptance, sentry-plugins]
+        job: [acceptance]
         instance: [0, 1]
         include:
-          - job: sentry-plugins
-            instance: [0]
-            group-strategy: file
           - job: acceptance
             group-strategy: individual
 

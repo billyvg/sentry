@@ -1,0 +1,12 @@
+name: 'action-getsentry-checkout'
+description: 'Check out getsentry'
+author: 'sentry.io'
+inputs:
+  private_key:
+    description: 'Private key for the GitHub App: Sentry Internal'
+outputs:
+  token:
+    description: 'Github Token for App installation'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
