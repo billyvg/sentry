@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: echo $HOME
+    - run: echo $RUNNER_WORKSPACE
 
     - name: Checkout sentry
       uses: actions/checkout@v2
@@ -20,7 +21,7 @@ jobs:
       with:
         repository: getsentry/getsentry
         token: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
-        path: ${{ HOME }}/getsentry
+        path: ${{ env.HOME }}/getsentry
 
     - name: Install gcloud utils
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
