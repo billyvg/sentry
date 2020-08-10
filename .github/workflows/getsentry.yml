@@ -164,7 +164,7 @@ jobs:
         echo '{"experimental": "enabled"}' > $HOME/.docker/config.json
         gcloud auth configure-docker --quiet
     - run: |
-        getsentry/bin/bump-sentry ${{ env.GITHUB_SHA }}
+        getsentry/bin/bump-sentry ${{ github.sha }}
 
     - name: Collect dependencies
       run: getsentry/bin/test-utils/collect_deps
