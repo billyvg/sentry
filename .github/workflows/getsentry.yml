@@ -18,7 +18,6 @@ jobs:
       with:
         repository: getsentry/getsentry
         token: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
-        path: ${{ env.RUNNER_WORKSPACE }}/getsentry
 
     - name: Install gcloud utils
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
