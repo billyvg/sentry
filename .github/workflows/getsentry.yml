@@ -17,7 +17,7 @@ jobs:
       id: getsentry
       uses: './.github/actions/action-getsentry-checkout'
       with:
-        privateKey: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
+        private_key: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
     - name: Checkout getsentry
       uses: actions/checkout@v2
       with:
