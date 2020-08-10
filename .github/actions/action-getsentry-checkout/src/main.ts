@@ -13,7 +13,7 @@ async function run(): Promise<void> {
       },
     });
 
-    const {data} = await appOctokit.installations();
+    const {data} = await appOctokit.apps.listInstallations();
 
     const resp = await appOctokit.auth({
       type: 'installation',

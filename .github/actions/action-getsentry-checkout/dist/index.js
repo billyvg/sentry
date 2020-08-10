@@ -2106,7 +2106,7 @@ function run() {
                     privateKey,
                 },
             });
-            const { data } = yield appOctokit.installations();
+            const { data } = yield appOctokit.apps.listInstallations();
             const resp = yield appOctokit.auth({
                 type: 'installation',
                 installationId: data[0].id,
