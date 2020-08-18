@@ -79,4 +79,5 @@ jobs:
             main_branch: master
             skip_step: install
             build_script: build-prod
+            windows_verbatim_arguments: false
             github_token: ${{ secrets.GITHUB_TOKEN }}
