@@ -10,6 +10,7 @@ import theme from 'app/utils/theme';
 import {loadPreferencesState} from 'app/actionCreators/preferences';
 
 class Main extends React.Component {
+  /* Test */
   componentDidMount() {
     loadPreferencesState();
   }
