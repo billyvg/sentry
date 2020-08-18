@@ -1,11 +1,15 @@
 name: javascript
 on:
+  push:
+    branches:
+      - master
   pull_request:
     paths:
       - '**.[tj]sx?'
 
 jobs:
     build:
+      if: ${{ github.ref != 'refs/heads/master' }}
       runs-on: ubuntu-latest
       steps:
         # Checkout codebase
@@ -72,6 +76,7 @@ jobs:
 
         - uses: getsentry/size-limit-action@v1-dev
           with:
+            main_branch: master
             skip_step: install
             build_script: build-prod
             windows_verbatim_arguments: false
