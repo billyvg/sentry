@@ -81,3 +81,4 @@ jobs:
             build_script: build-prod
             windows_verbatim_arguments: false
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
