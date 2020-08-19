@@ -74,7 +74,7 @@ jobs:
         - name: Install dependencies
           run: yarn install --frozen-lockfile
 
-        - uses: getsentry/size-limit-action@v1-dev
+        - uses: getsentry/size-limit-action@v2-dev
           with:
             main_branch: master
             skip_step: install
