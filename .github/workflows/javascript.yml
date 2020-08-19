@@ -46,6 +46,7 @@ jobs:
           run: |
             echo "::remove-matcher owner=tsc::"
             echo "::add-matcher::.github/tsc.json"
+
             yarn tsc -p config/tsconfig.build.json
 
     webpack:
