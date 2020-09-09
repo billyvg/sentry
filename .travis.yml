@@ -101,12 +101,14 @@ script:
 after_failure:
   - dmesg | tail -n 100
 
-after_script:
+after_success:
   - |
     coverage_files=$(ls .artifacts/*coverage.xml || true)
     if [[ -n "$coverage_files" || -f .artifacts/coverage/cobertura-coverage.xml ]]; then
       pip install -U codecov
+      pip install -U python-coveralls
       codecov -e TEST_SUITE
+      coveralls
     fi
   - *install_volta
   - volta install @zeus-ci/cli
