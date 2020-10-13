@@ -153,8 +153,6 @@ jobs:
           if: always()
           run: |
             mkdir -p ${{ steps.setup.outputs.acceptance-dir }}
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-mobile
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-tooltips
             make run-acceptance
           env:
             PYTEST_SNAPSHOTS_DIR: ${{ steps.setup.outputs.acceptance-dir }}
@@ -228,8 +226,6 @@ jobs:
           if: always()
           run: |
             mkdir -p ${{ steps.setup.outputs.acceptance-dir }}
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-mobile
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-tooltips
             make run-acceptance
           env:
             PYTEST_SNAPSHOTS_DIR: ${{ steps.setup.outputs.acceptance-dir }}
