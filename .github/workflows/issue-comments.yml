@@ -48,10 +48,12 @@ jobs:
       - uses: actions/github-script@v3
         with:
           script: |
-            github.orgs.checkMembershipForUser({
-              org: 'billyvg', # We could use github.event.repository_owner, but let's hardcode it for now
+            const result = await github.orgs.checkMembershipForUser({
+              org: 'billyvg',
               username: context.payload.sender.login,
             })
+            console.log(result);
+            return result
 
       - name: getsentry token
         id: getsentry
