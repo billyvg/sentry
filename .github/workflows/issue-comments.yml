@@ -1,7 +1,5 @@
 name: sentry pr bot
-on:
-  # When a comment is made in a pull request or issue
-  issue_comment:
+on: issue_comment
 
 jobs:
   debug:
