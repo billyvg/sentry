@@ -52,7 +52,7 @@ jobs:
           script: |
             try {
               const result = await github.orgs.checkMembershipForUser({
-                org: 'getsentry',
+                org: 'facebook',
                 username: context.payload.sender.login,
               })
               console.log(result);
