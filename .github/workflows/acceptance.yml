@@ -7,6 +7,11 @@ on:
   pull_request:
 
 jobs:
+  test:
+    runs-on: ubuntu-16.04
+    steps:
+      - run: echo "hi"
+
     # parse-commit-message:
       # if: ${{ github.ref != 'refs/heads/master' }}
       # runs-on: ubuntu-16.04
@@ -366,53 +371,53 @@ jobs:
 
         # TODO(joshuarli): SENTRY_PYTHON3=1, snapshots, visual-diff needs py3-acceptance.
 
-    acceptance:
-      runs-on: ubuntu-16.04
-      continue-on-error: true
+    # acceptance:
+      # runs-on: ubuntu-16.04
+      # continue-on-error: true
 
-      env:
-        # Node configuration
-        NODE_OPTIONS: --max-old-space-size=4096
-        NODE_ENV: development
-        VISUAL_HTML_ENABLE: 1
+      # env:
+        # # Node configuration
+        # NODE_OPTIONS: --max-old-space-size=4096
+        # NODE_ENV: development
+        # VISUAL_HTML_ENABLE: 1
 
-      steps:
-        # Checkout codebase
-        - uses: actions/checkout@v2
+      # steps:
+        # # Checkout codebase
+        # - uses: actions/checkout@v2
 
-        - run: |
-            ls .artifacts/visual-snapshots/acceptance/1680px
-            rm -rf .artifacts/visual-snapshots/acceptance/1680px/project*
-        - name: Save snapshots
-          if: always()
-          uses: getsentry/action-visual-snapshot@v2-dev
-          with:
-            save-only: true
-            snapshot-path: .artifacts/visual-snapshots
+        # - run: |
+            # ls .artifacts/visual-snapshots/acceptance/1680px
+            # rm -rf .artifacts/visual-snapshots/acceptance/1680px/project*
+        # - name: Save snapshots
+          # if: always()
+          # uses: getsentry/action-visual-snapshot@v2-dev
+          # with:
+            # save-only: true
+            # snapshot-path: .artifacts/visual-snapshots
 
-    acceptance2:
-      runs-on: ubuntu-16.04
-      continue-on-error: true
+    # acceptance2:
+      # runs-on: ubuntu-16.04
+      # continue-on-error: true
 
-      env:
-        # Node configuration
-        NODE_OPTIONS: --max-old-space-size=4096
-        NODE_ENV: development
-        VISUAL_SNAPSHOT_ENABLE: 1
+      # env:
+        # # Node configuration
+        # NODE_OPTIONS: --max-old-space-size=4096
+        # NODE_ENV: development
+        # VISUAL_SNAPSHOT_ENABLE: 1
 
-      steps:
-        # Checkout codebase
-        - uses: actions/checkout@v2
+      # steps:
+        # # Checkout codebase
+        # - uses: actions/checkout@v2
 
-        - run: |
-            ls .artifacts/visual-snapshots/acceptance/1680px
-            rm -rf .artifacts/visual-snapshots/acceptance/1680px/organization*
-        - name: Save snapshots
-          if: always()
-          uses: getsentry/action-visual-snapshot@v2-dev
-          with:
-            save-only: true
-            snapshot-path: .artifacts/visual-snapshots
+        # - run: |
+            # ls .artifacts/visual-snapshots/acceptance/1680px
+            # rm -rf .artifacts/visual-snapshots/acceptance/1680px/organization*
+        # - name: Save snapshots
+          # if: always()
+          # uses: getsentry/action-visual-snapshot@v2-dev
+          # with:
+            # save-only: true
+            # snapshot-path: .artifacts/visual-snapshots
 
     # py3-acceptance:
       # name: 'python3.6 acceptance'
@@ -484,19 +489,19 @@ jobs:
 
         # TODO(joshuarli): SENTRY_PYTHON3=1, snapshots, visual-diff needs py3-acceptance.
 
-    visual-diff:
-      if: ${{ github.ref != 'refs/heads/master' }}
-      needs: [acceptance, acceptance2]
-      runs-on: ubuntu-16.04
+    # visual-diff:
+      # if: ${{ github.ref != 'refs/heads/master' }}
+      # needs: [acceptance, acceptance2]
+      # runs-on: ubuntu-16.04
 
-      steps:
-        - name: Diff snapshots
-          id: visual-snapshots-diff
-          uses: getsentry/action-visual-snapshot@v2-dev
-          with:
-            api-endpoint: https://bv.ngrok.io/api
-            api-token: ${{ secrets.VISUAL_SNAPSHOT_SECRET_LOCAL }}
-            defaultGroup: 1680px
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            gcs-bucket: 'sentry-visual-snapshots'
-            gcp-service-account-key: ${{ secrets.SNAPSHOT_GOOGLE_SERVICE_ACCOUNT_KEY }}
+      # steps:
+        # - name: Diff snapshots
+          # id: visual-snapshots-diff
+          # uses: getsentry/action-visual-snapshot@v2-dev
+          # with:
+            # api-endpoint: https://bv.ngrok.io/api
+            # api-token: ${{ secrets.VISUAL_SNAPSHOT_SECRET_LOCAL }}
+            # defaultGroup: 1680px
+            # github-token: ${{ secrets.GITHUB_TOKEN }}
+            # gcs-bucket: 'sentry-visual-snapshots'
+            # gcp-service-account-key: ${{ secrets.SNAPSHOT_GOOGLE_SERVICE_ACCOUNT_KEY }}
