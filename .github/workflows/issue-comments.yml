@@ -45,7 +45,9 @@ jobs:
     if: ${{ (github.event.issue.pull_request.url != '' || github.event.pull_request.id != '') && (contains(github.event.comment.body, '#test-getsentry') || contains(github.event.pull_request.body, '#test-getsentry'))  && github.repository == 'billyvg/sentry' }}
     runs-on: ubuntu-16.04
     steps:
-      - uses: actions/github-script@v3
+      - name: Check getsentry member
+        id: org
+        uses: actions/github-script@v3
         with:
           script: |
             try {
@@ -60,6 +62,7 @@ jobs:
             }
 
       - name: getsentry token
+        if: steps.org.outputs.result == 'true'
         id: getsentry
         uses: getsentry/action-github-app-token@v1
         with:
@@ -68,6 +71,7 @@ jobs:
 
       # Notify getsentry
       - name: Dispatch getsentry tests
+        if: steps.org.outputs.result == 'true'
         uses: actions/github-script@v3
         with:
           github-token: ${{ steps.getsentry.outputs.token }}
