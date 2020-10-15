@@ -1,6 +1,6 @@
 name: sentry pull request bot
 on:
-  issues:
+  pull_request:
     types: [labeled]
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
 
   test-getsentry:
     name: test getsentry
-    if: ${{ github.event.issue.pull_request.url != '' && contains(github.event.comment.body, '#sentry test getsentry')  && github.repository == 'billyvg/sentry' }}
+    if: ${{ contains(github.event.label.body, '#sentry test getsentry')  && github.repository == 'billyvg/sentry' }}
     runs-on: ubuntu-16.04
     steps:
       - name: getsentry token
