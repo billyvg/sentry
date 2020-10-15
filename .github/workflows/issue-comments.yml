@@ -32,7 +32,7 @@ jobs:
 
   test-getsentry:
     name: test getsentry
-    if: ${{ contains(github.event.issue_comment.comment, '#test-getsentry') }}
+    if: ${{ github.event.issue.pull_request.url != '' && contains(github.event.comment.body, '#test-getsentry')  && github.repository == 'billyvg/sentry' }}
     runs-on: ubuntu-16.04
     steps:
       - name: getsentry token
