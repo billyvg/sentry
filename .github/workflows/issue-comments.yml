@@ -50,7 +50,7 @@ jobs:
           script: |
             github.orgs.checkMembershipForUser({
               org: 'billyvg', # We could use github.event.repository_owner, but let's hardcode it for now
-              username: '${{ github.event.sender.login }}',
+              username: context.payload.sender.login,
             })
 
       - name: getsentry token
