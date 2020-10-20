@@ -1,0 +1,69 @@
+name: sentry pull request bot
+
+# Note this event happens on Issue comments AND PR comments,
+# we make sure that we only respond to PR comments.
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  debug:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+
+
+  # TODO(billy): Move this into an external action as we add more functionality
+  test-getsentry:
+    name: test getsentry
+    # Ensure this bot only responds for pull requests and only for the main repository
+    if: ${{ (github.event.issue.pull_request.url != '' || github.event.pull_request.id != '') && (contains(github.event.comment.body, '#test-getsentry') || contains(github.event.pull_request.body, '#test-getsentry'))  && github.repository == 'billyvg/sentry' }}
+    runs-on: ubuntu-16.04
+    steps:
+      - name: getsentry token
+        id: getsentry
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ secrets.SENTRY_INTERNAL_APP_ID }}
+          private_key: ${{ secrets.SENTRY_INTERNAL_APP_PRIVATE_KEY }}
+
+      # Notify getsentry
+      - name: Dispatch getsentry tests
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ steps.getsentry.outputs.token }}
+          script: |
+            github.actions.createWorkflowDispatch({
+              owner: 'getsentry',
+              repo: 'getsentry',
+              workflow_id: 'acceptance.yml',
+              ref: 'master',
+              inputs: {
+                'sentry-sha': '${{ github.event.pull_request.head.sha }}',
+              }
+            })
