@@ -94,7 +94,7 @@ jobs:
 
         - name: Save snapshots
           if: always()
-          uses: getsentry/action-visual-snapshot@v2
+          uses: getsentry/action-visual-snapshot@v2-dev
           with:
             save-only: true
             snapshot-path: .artifacts/visual-snapshots
@@ -152,9 +152,9 @@ jobs:
         - name: Run acceptance tests (#${{ steps.setup.outputs.matrix-instance-number }} of ${{ strategy.job-total }})
           if: always()
           run: |
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-mobile
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-tooltips
+            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}/1680px
+            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}/375px
+            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}/tooltips
             make run-acceptance
           env:
             PYTEST_SNAPSHOTS_DIR: ${{ steps.setup.outputs.acceptance-dir }}
@@ -162,7 +162,7 @@ jobs:
 
         - name: Save snapshots
           if: always()
-          uses: getsentry/action-visual-snapshot@v2
+          uses: getsentry/action-visual-snapshot@v2-dev
           with:
             save-only: true
             snapshot-path: .artifacts/visual-snapshots
@@ -228,8 +228,6 @@ jobs:
           if: always()
           run: |
             mkdir -p ${{ steps.setup.outputs.acceptance-dir }}
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-mobile
-            mkdir -p ${{ steps.setup.outputs.acceptance-dir }}-tooltips
             make run-acceptance
           env:
             PYTEST_SNAPSHOTS_DIR: ${{ steps.setup.outputs.acceptance-dir }}
@@ -245,7 +243,7 @@ jobs:
       steps:
         - name: Diff snapshots
           id: visual-snapshots-diff
-          uses: getsentry/action-visual-snapshot@v2
+          uses: getsentry/action-visual-snapshot@v2-dev
           with:
             api-token: ${{ secrets.VISUAL_SNAPSHOT_SECRET }}
             github-token: ${{ secrets.GITHUB_TOKEN }}

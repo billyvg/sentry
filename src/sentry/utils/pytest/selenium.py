@@ -324,14 +324,14 @@ class Browser(object):
                 # This will make sure we resize viewport height to fit contents
                 with self.full_viewport():
                     self.driver.find_element_by_tag_name("body").screenshot(
-                        u"{}/{}.png".format(snapshot_dir, slugify(name))
+                        u"{}/1680px/{}.png".format(snapshot_dir, slugify(name))
                     )
                     has_tooltips = self.driver.execute_script(
                         "return window.__openAllTooltips && window.__openAllTooltips()"
                     )
                     if has_tooltips:
                         self.driver.find_element_by_tag_name("body").screenshot(
-                            u"{}-tooltips/{}.png".format(snapshot_dir, slugify(name))
+                            u"{}/tooltips/{}.png".format(snapshot_dir, slugify(name))
                         )
                         self.driver.execute_script(
                             "window.__closeAllTooltips && window.__closeAllTooltips()"
@@ -340,7 +340,7 @@ class Browser(object):
             with self.mobile_viewport():
                 # switch to a mobile sized viewport
                 self.driver.find_element_by_tag_name("body").screenshot(
-                    u"{}-mobile/{}.png".format(snapshot_dir, slugify(name))
+                    u"{}/375px/{}.png".format(snapshot_dir, slugify(name))
                 )
 
         return self
