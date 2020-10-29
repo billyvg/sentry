@@ -13,11 +13,4 @@ module.exports = [
     gzip: true,
     brotli: false,
   },
-  {
-    path: ['public/sentry.css'],
-    limit: '4.0MB',
-    webpack: false,
-    gzip: true,
-    brotli: false,
-  },
 ];
