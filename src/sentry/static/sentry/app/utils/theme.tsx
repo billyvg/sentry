@@ -92,7 +92,7 @@ const aliases = {
   /**
    * Primary border color
    */
-  border: colors.gray400,
+  border: colors.red300,
 
   /**
    * Inner borders, e.g. borders inside of a grid
