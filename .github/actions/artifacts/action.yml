@@ -15,11 +15,14 @@ runs:
     # Setup custom pytest matcher, see https://github.com/actions/setup-node/issues/97
     - name: Upload to zeus
       shell: bash
+      env:
+        PATH: "$(yarn global bin):$PATH"
       run: |
-        npx @zeus-ci/cli upload -t "text/xml+xunit" .artifacts/*junit.xml
-        npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/*coverage.xml
-        npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
-        npx @zeus-ci/cli upload -t "text/html+pytest" .artifacts/*pytest.html
-        npx @zeus-ci/cli upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log
-        npx @zeus-ci/cli upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml
-        npx @zeus-ci/cli upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json
+        yarn global add @zeus-ci/cli
+        yarn zeus upload -t "text/xml+xunit" .artifacts/*junit.xml
+        yarn zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml
+        yarn zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml
+        yarn zeus upload -t "text/html+pytest" .artifacts/*pytest.html
+        yarn zeus upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log
+        yarn zeus upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml
+        yarn zeus upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json
