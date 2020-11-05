@@ -17,6 +17,7 @@ runs:
       shell: bash
       run: |
         ls .artifacts
+        npx @zeus-ci/cli --help
         npx @zeus-ci/cli upload -t "text/xml+xunit" .artifacts/*junit.xml || true
         npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
         npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
