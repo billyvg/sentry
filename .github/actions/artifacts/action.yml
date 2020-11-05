@@ -8,7 +8,7 @@ runs:
       run: |
         coverage_files=$(ls .artifacts/*coverage.xml || true)
         if [[ -n "$coverage_files" || -f .artifacts/coverage/cobertura-coverage.xml ]]; then
-          pip install -U codecov
+          pip install -U codecov --no-python-version-warning
           codecov
         fi
 
@@ -17,13 +17,14 @@ runs:
       shell: bash
       run: |
         ls .artifacts
+        p="$(yarn global bin)"
         echo "$(yarn global bin)" >> $GITHUB_PATH
         yarn global add @zeus-ci/cli
-        zeus --help
-        zeus upload -t "text/xml+xunit" .artifacts/*junit.xml || true
-        zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
-        zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
-        zeus upload -t "text/html+pytest" .artifacts/*pytest.html || true
-        zeus upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log || true
-        zeus upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml || true
-        zeus upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json || true
+        "$p/zeus" --help
+        "$p/zeus" upload -t "text/xml+xunit" .artifacts/*junit.xml || true
+        "$p/zeus" upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
+        "$p/zeus" upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
+        "$p/zeus" upload -t "text/html+pytest" .artifacts/*pytest.html || true
+        "$p/zeus" upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log || true
+        "$p/zeus" upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml || true
+        "$p/zeus" upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json || true
