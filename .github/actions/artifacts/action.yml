@@ -15,13 +15,16 @@ runs:
     # Setup custom pytest matcher, see https://github.com/actions/setup-node/issues/97
     - name: Upload to zeus
       shell: bash
+      env:
+        PATH: $PATH:$(yarn global bin)
       run: |
         ls .artifacts
-        npx @zeus-ci/cli --help
-        npx @zeus-ci/cli upload -t "text/xml+xunit" .artifacts/*junit.xml || true
-        npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
-        npx @zeus-ci/cli upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
-        npx @zeus-ci/cli upload -t "text/html+pytest" .artifacts/*pytest.html || true
-        npx @zeus-ci/cli upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log || true
-        npx @zeus-ci/cli upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml || true
-        npx @zeus-ci/cli upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json || true
+        yarn global add @zeus-ci/cli
+        zeus --help
+        zeus upload -t "text/xml+xunit" .artifacts/*junit.xml || true
+        zeus upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
+        zeus upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
+        zeus upload -t "text/html+pytest" .artifacts/*pytest.html || true
+        zeus upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log || true
+        zeus upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml || true
+        zeus upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json || true
