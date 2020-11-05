@@ -15,10 +15,9 @@ runs:
     # Setup custom pytest matcher, see https://github.com/actions/setup-node/issues/97
     - name: Upload to zeus
       shell: bash
-      env:
-        PATH: $PATH:$(yarn global bin)
       run: |
         ls .artifacts
+        echo "$(yarn global bin)" >> $GITHUB_PATH
         yarn global add @zeus-ci/cli
         zeus --help
         zeus upload -t "text/xml+xunit" .artifacts/*junit.xml || true
