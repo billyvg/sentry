@@ -31,6 +31,7 @@ function getIncidentsFromIncidentResponse(
     if (!isMajor && item.impact === 'major') {
       isMajor = true;
     }
+
     incidents.push({
       id: item.id,
       name: item.name,
