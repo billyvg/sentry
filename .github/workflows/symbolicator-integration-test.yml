@@ -70,3 +70,5 @@ jobs:
 
       - name: Handle artifacts
         uses: ./.github/actions/artifacts
+        with:
+          zeus-hook-base: ${{ secrets.ZEUS_HOOK_BASE }}

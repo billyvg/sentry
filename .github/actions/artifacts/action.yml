@@ -1,5 +1,10 @@
 name: 'Sentry Artifacts'
 description: 'Handles uploading coverage/test artifacts to codecov and zeus'
+inputs:
+  zeus-hook-base:
+    description: 'ZEUS_HOOK_BASE url'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -16,7 +21,7 @@ runs:
     - name: Upload to zeus
       shell: bash
       env:
-        ZEUS_HOOK_BASE: ${{ secrets.ZEUS_HOOK_BASE }}
+        ZEUS_HOOK_BASE: ${{ inputs.ZEUS_HOOK_BASE }}
       run: |
         ls .artifacts
         p="$(yarn global bin)"
