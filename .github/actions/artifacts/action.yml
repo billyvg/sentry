@@ -21,7 +21,7 @@ runs:
     - name: Upload to zeus
       shell: bash
       env:
-        ZEUS_HOOK_BASE: ${{ inputs.ZEUS_HOOK_BASE }}
+        ZEUS_HOOK_BASE: ${{ inputs.zeus-hook-base }}
       run: |
         ls .artifacts
         p="$(yarn global bin)"
