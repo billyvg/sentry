@@ -1,9 +1,5 @@
 name: 'Sentry Artifacts'
 description: 'Handles uploading coverage/test artifacts to codecov and zeus'
-inputs:
-  zeus-hook-base:
-    description: 'ZEUS_HOOK_BASE url'
-    required: true
 
 runs:
   using: "composite"
@@ -16,21 +12,3 @@ runs:
           pip install -U codecov --no-python-version-warning
           codecov
         fi
-
-    # Setup custom pytest matcher, see https://github.com/actions/setup-node/issues/97
-    - name: Upload to zeus
-      shell: bash
-      env:
-        ZEUS_HOOK_BASE: ${{ inputs.zeus-hook-base }}
-      run: |
-        ls .artifacts
-        p="$(yarn global bin)"
-        yarn global add @zeus-ci/cli
-        "$p/zeus" --help
-        "$p/zeus" upload -t "text/xml+xunit" .artifacts/*junit.xml || true
-        "$p/zeus" upload -t "text/xml+coverage" .artifacts/*coverage.xml || true
-        "$p/zeus" upload -t "text/xml+coverage" .artifacts/coverage/cobertura-coverage.xml || true
-        "$p/zeus" upload -t "text/html+pytest" .artifacts/*pytest.html || true
-        "$p/zeus" upload -t "text/plain+pycodestyle" .artifacts/*pycodestyle.log || true
-        "$p/zeus" upload -t "text/xml+checkstyle" .artifacts/*checkstyle.xml || true
-        "$p/zeus" upload -t "application/webpack-stats+json" .artifacts/*webpack-stats.json || true
