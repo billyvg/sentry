@@ -15,10 +15,11 @@ runs:
     # Setup custom pytest matcher, see https://github.com/actions/setup-node/issues/97
     - name: Upload to zeus
       shell: bash
+      env:
+        ZEUS_HOOK_BASE: ${{ secrets.ZEUS_HOOK_BASE }}
       run: |
         ls .artifacts
         p="$(yarn global bin)"
-        echo "$(yarn global bin)" >> $GITHUB_PATH
         yarn global add @zeus-ci/cli
         "$p/zeus" --help
         "$p/zeus" upload -t "text/xml+xunit" .artifacts/*junit.xml || true
