@@ -40,6 +40,29 @@ jobs:
         name: Checkout sentry (push)
         if: github.event.pull_request.head.ref == ''
 
+      - run: git remote
+      - run: git show-branch -a
+
+      - if: github.event.pull_request.head.ref != ''
+        run: git fetch origin
+
+      - run: git branch
+
+      - if: github.event.pull_request.head.ref != ''
+        run: git merge-base ${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }}
+
+      - if: always()
+        run: git merge-base origin/master HEAD
+
+      - if: always()
+        run: git merge-base origin/master HEAD -a
+
+      - if: always()
+        run: git merge-base origin/master HEAD --fork-point
+
+      - if: always()
+        run: git merge-base origin/${{ github.event.pull_request.base.ref }} origin/${{ github.event.pull_request.head.ref }}
+
       - uses: volta-cli/action@v1
 
       # See https://github.com/actions/cache/blob/master/examples.md#node---yarn for example
