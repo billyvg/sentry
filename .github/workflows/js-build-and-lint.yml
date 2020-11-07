@@ -1,4 +1,4 @@
-ame: js build and lint
+name: js build and lint
 
 on:
   # Only runs webpack on master to save bundle size info into artifacts
