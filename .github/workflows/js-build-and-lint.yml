@@ -66,7 +66,7 @@ jobs:
       - name: eslint (changed files only)
         if: github.ref != 'refs/heads/master' && steps.changes.outputs.frontend == 'true'
         run: |
-          yarn lint --fix ${{ steps.changes.outputs.frontend_modified_lintable_files }}
+          yarn eslint --fix ${{ steps.changes.outputs.frontend_modified_lintable_files }}
 
       # Otherwise if it's not main branch, only lint modified files
       - name: Commit any eslint fixed files

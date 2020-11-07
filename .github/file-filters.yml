@@ -18,8 +18,7 @@ frontend: &frontend
   - 'tests/js/**'
 
 frontend_modified_lintable:
-  addedOrModified:
-    - *frontend_lintable
+  - added|modified: *frontend_lintable
 
 backend_lintable: &backend_lintable
   - '**/*.py'
