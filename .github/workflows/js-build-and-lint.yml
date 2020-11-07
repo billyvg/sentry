@@ -71,6 +71,7 @@ jobs:
       # Otherwise if it's not main branch, only lint modified files
       - name: Commit any eslint fixed files
         if: github.ref != 'refs/heads/master' && steps.changes.outputs.frontend == 'true'
+        continue-on-error: true
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.name "41898282+github-actions[bot]@users.noreply.github.com"
@@ -80,6 +81,7 @@ jobs:
 
       - name: tsc
         if: steps.changes.outputs.frontend == 'true'
+        continue-on-error: true
         run: |
           yarn tsc -p config/tsconfig.build.json
 
