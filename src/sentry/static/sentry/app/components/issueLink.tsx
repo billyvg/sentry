@@ -30,13 +30,10 @@ const IssueLink = ({children, orgId, issue, to, card = true}: Props) => {
 
   const message = getMessage(issue);
 
-  const className = classNames({
-    isBookmarked: issue.isBookmarked,
-    hasSeen: issue.hasSeen,
-    isResolved: issue.status === 'resolved',
-  });
+  const className = classNames({ isBookmarked: issue.isBookmarked, hasSeen: issue.hasSeen, isResolved: issue.status === 'resolved', });
 
   const streamPath = `/organizations/${orgId}/issues/`;
+  test;
 
   const hovercardBody = (
     <div className={className}>
