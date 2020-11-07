@@ -51,7 +51,14 @@ const IssueLink = ({children, orgId, issue, to, card = true}: Props) => {
           message={message}
           annotations={
             <React.Fragment>
-              {issue.logger && ( <EventAnnotation> <Link to={{ pathname: streamPath, query: {query: `logger:${issue.logger}`}, }} {issue.logger} </Link> </EventAnnotation>
+              {issue.logger && (
+                <EventAnnotation>
+                  {' '} <Link
+                    to={{
+                      pathname: streamPath,
+                      query: {query: `logger:${issue.logger}`},
+                    }}
+                  > {issue.logger} </Link> </EventAnnotation>
               )}
               {issue.annotations.map((annotation, i) => (
                 <EventAnnotation key={i} dangerouslySetInnerHTML={{__html: annotation}} />
