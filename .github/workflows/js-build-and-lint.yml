@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          # because we want to lint + fix + commit, we need to checkout the HEAD sha (otherwise
+          # it checks out the merge commit and we will not be able to commit to it)
           ref: ${{ github.event.pull_request.head.sha || 'master' }}
 
       - name: Check for frontend file changes
