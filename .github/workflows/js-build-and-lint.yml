@@ -18,7 +18,7 @@ jobs:
         with:
           # because we want to lint + fix + commit, we need to checkout the HEAD sha (otherwise
           # it checks out the merge commit and we will not be able to commit to it)
-          ref: ${{ github.event.pull_request.head.sha || 'master' }}
+          ref: ${{ github.event.pull_request.head.ref || 'master' }}
 
       - name: Check for frontend file changes
         uses: getsentry/paths-filter@v2
