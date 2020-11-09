@@ -30,7 +30,11 @@ const IssueLink = ({children, orgId, issue, to, card = true}: Props) => {
 
   const message = getMessage(issue);
 
-  const className = classNames({ isBookmarked: issue.isBookmarked, hasSeen: issue.hasSeen, isResolved: issue.status === 'resolved', });
+  const className = classNames({
+    isBookmarked: issue.isBookmarked,
+    hasSeen: issue.hasSeen,
+    isResolved: issue.status === 'resolved',
+  });
 
   const streamPath = `/organizations/${orgId}/issues/`;
   test;
@@ -50,12 +54,17 @@ const IssueLink = ({children, orgId, issue, to, card = true}: Props) => {
             <React.Fragment>
               {issue.logger && (
                 <EventAnnotation>
-                  {' '} <Link
+                  {' '}
+                  <Link
                     to={{
                       pathname: streamPath,
                       query: {query: `logger:${issue.logger}`},
                     }}
-                  > {issue.logger} </Link> </EventAnnotation>
+                  >
+                    {' '}
+                    {issue.logger}{' '}
+                  </Link>{' '}
+                </EventAnnotation>
               )}
               {issue.annotations.map((annotation, i) => (
                 <EventAnnotation key={i} dangerouslySetInnerHTML={{__html: annotation}} />
