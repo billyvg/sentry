@@ -10,7 +10,6 @@ jest.unmock('lodash/debounce');
 jest.mock('lodash/debounce', () => {
   const debounceMap = new Map();
   const mockDebounce = (fn, timeout) => (...args) => {
-    console.log('mcok db');
     if (debounceMap.has(fn)) {
       clearTimeout(debounceMap.get(fn));
     }
@@ -242,7 +241,7 @@ describe('ProjectsDashboard', function () {
 
     const teamsWithStatTestProjects = [TestStubs.Team({projects})];
 
-    it.only('uses ProjectsStatsStore to load stats', async function () {
+    it('uses ProjectsStatsStore to load stats', async function () {
       jest.useFakeTimers();
       ProjectsStatsStore.onStatsLoadSuccess([{...projects[0], stats: [[1517281200, 2]]}]);
       const loadStatsSpy = jest.spyOn(projectsActions, 'loadStatsForProject');
@@ -273,8 +272,7 @@ describe('ProjectsDashboard', function () {
       expect(wrapper.find('LoadingCard')).toHaveLength(5);
 
       // Advance timers so that batched request fires
-      jest.advanceTimersByTime(151);
-
+      jest.advanceTimersByTime(51);
       expect(mock).toHaveBeenCalledTimes(1);
       // query ids = 3, 2, 4 = bookmarked
       // 1 - already loaded in store so shouldn't be in query
