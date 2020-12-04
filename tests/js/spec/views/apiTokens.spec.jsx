@@ -7,7 +7,8 @@ import {ApiTokens} from 'app/views/settings/account/apiTokens';
 
 const organization = TestStubs.Organization();
 
-describe('ApiTokens', function () {
+// eslint-disable-next-line
+describe.only('ApiTokens', function () {
   const routerContext = TestStubs.routerContext();
 
   beforeEach(function () {
