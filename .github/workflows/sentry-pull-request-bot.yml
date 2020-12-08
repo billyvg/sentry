@@ -56,13 +56,12 @@ jobs:
             });
             console.log(pr);
             // XXX: This can potentially cancel `master` runs if this is from a fork (but only getsentry members can invoke this)
-            const workflowRuns = await github.actions.listWorkflowRunsForRepo({
+            const resp = await github.actions.listWorkflowRunsForRepo({
               owner,
               repo,
               branch: pr.data.head.ref,
             });
-            console.log(workflowRuns);
-            await Promise.all(workflowRuns.map(run => github.actions.cancelWorkflowRun({
+            await Promise.all(resp.data.workflow_runs.filter(run => run.status !== 'completed').map(run => github.actions.cancelWorkflowRun({
               owner,
               repo,
               run_id: run.id,
