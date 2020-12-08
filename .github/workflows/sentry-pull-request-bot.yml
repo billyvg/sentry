@@ -59,7 +59,7 @@ jobs:
             const workflowRuns = await github.actions.listWorkflowRunsForRepo({
               owner,
               repo,
-              branch: '${{ pr.data.head.ref }}',
+              branch: pr.data.head.ref,
             });
             console.log(workflowRuns);
             await Promise.all(workflowRuns.map(run => github.actions.cancelWorkflowRun({
