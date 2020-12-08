@@ -57,8 +57,8 @@ jobs:
             console.log(pr);
             // XXX: This can potentially cancel `master` runs if this is from a fork (but only getsentry members can invoke this)
             const workflowRuns = await github.actions.listWorkflowRunsForRepo({
-              owner: '${{ github.repository_owner }}',
-              repo: '${{ github.event.repository.name }}',
+              owner,
+              repo,
               status: 'in_progress',
               branch: '${{ pr.data.head.ref }}',
             })
