@@ -59,9 +59,14 @@ jobs:
             const workflowRuns = await github.actions.listWorkflowRunsForRepo({
               owner,
               repo,
-              status: 'in_progress',
               branch: '${{ pr.data.head.ref }}',
-            })
+            });
+            console.log(workflowRuns);
+            await Promise.all(workflowRuns.map(run => github.actions.cancelWorkflowRun({
+              owner,
+              repo,
+              run_id: run.id,
+            })));
 
 
   # TODO(billy): Move this into an external action as we add more functionality
