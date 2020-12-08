@@ -3,6 +3,8 @@ name: sentry pull request bot
 # Note this event happens on Issue comments AND PR comments,
 # we make sure that we only respond to PR comments.
 on:
+  issues:
+    types: [labeled, unlabeled]
   issue_comment:
     types: [created, edited]
   pull_request:
@@ -17,6 +19,49 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
+
+
+  cancel-jobs:
+    name: cancel jobs
+    runs-on: ubuntu-16.04
+    if: github.event_name == issues && github.event.issue.pull_request.url != ''
+
+    steps:
+      - name: Check getsentry membership
+        id: org
+        uses: actions/github-script@v3
+        with:
+          script: |
+            try {
+              const result = await github.orgs.checkMembershipForUser({
+                org: 'getsentry',
+                username: context.payload.sender.login,
+              })
+              return result.status == 204;
+            } catch {
+              return false;
+            }
+
+      - name: Cancel jobs for PR
+        if: steps.org.outputs.result == 'true'
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const owner = '${{ github.repository_owner }}';
+            const repo = '${{ github.event.repository.name }}';
+            const pr = await github.pulls.get({
+              owner,
+              repo,
+              pull_number: ${{ github.event.issue.number }},
+            });
+            console.log(pr);
+            // XXX: This can potentially cancel `master` runs if this is from a fork (but only getsentry members can invoke this)
+            const workflowRuns = await github.actions.listWorkflowRunsForRepo({
+              owner: '${{ github.repository_owner }}',
+              repo: '${{ github.event.repository.name }}',
+              status: 'in_progress',
+              branch: '${{ pr.data.head.ref }}',
+            })
 
 
   # TODO(billy): Move this into an external action as we add more functionality
