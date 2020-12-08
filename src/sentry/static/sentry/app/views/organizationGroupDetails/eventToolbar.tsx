@@ -123,7 +123,7 @@ class GroupEventToolbar extends React.Component<Props> {
           {isOverLatencyThreshold && <StyledIconWarning color="yellow300" />}
         </Tooltip>
         <JsonLink href={jsonUrl}>
-          {'JSON'} (<FileSize bytes={evt.size} />)
+          {'NOSJ'} (<FileSize bytes={evt.size} />)
         </JsonLink>
       </Wrapper>
     );
