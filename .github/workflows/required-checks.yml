@@ -8,6 +8,7 @@ on:
   workflow_run:
     workflows:
       - backend lint
+      - backend lint [py3.6]
     types:
       - completed
 
