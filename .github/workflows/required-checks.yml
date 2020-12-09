@@ -6,7 +6,7 @@ on:
   # The reason we use workflow_run is because other, more relevant, events (e.g. `status` or `check_run`)
   # will not get triggered by GHA workflows.
   workflow_run:
-    workflows: ["backend lint"]
+    workflows: ["backend lint", "backend \[py3.6\]"]
     types:
       - completed
 
