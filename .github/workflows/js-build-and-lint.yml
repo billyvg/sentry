@@ -31,8 +31,17 @@ jobs:
           token: ${{ github.token }}
           filters: .github/file-filters.yml
 
+      - name: Is this on master, from worfklow dispatch, or are there frontend files changed?
+        id: should-run
+        run: |
+          if [ '${{ github.ref }}' == 'refs/heads/master' ] || [ '${{ github.event.inputs.sentry-sha }}' != '' ] || [ '${{ steps.changes.outputs.frontend }}' == 'true' ]; then
+            echo "::set-output name=master-or-dispatch-or-frontend-changes::true"
+          else
+            echo "::set-output name=master-or-dispatch-or-frontend-changes::false"
+          fi
+
       - uses: volta-cli/action@v1
-        if: steps.changes.outputs.frontend == 'true'
+        if: steps.should-run.outputs.master-or-dispatch-or-frontend-changes == 'true'
 
       # See https://github.com/actions/cache/blob/master/examples.md#node---yarn for example
       - name: Get yarn cache directory path
