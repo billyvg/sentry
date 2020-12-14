@@ -6,13 +6,7 @@
 
 // Conclusion can be one of:
 // success, failure, neutral, cancelled, skipped, timed_out, or action_required
-const FAILED_CONCLUSION_TYPES = [
-  'failure',
-  'cancelled',
-  'timed_out',
-  'action_required',
-  null,
-];
+const FAILED_CONCLUSION_TYPES = ['failure', 'cancelled', 'timed_out', 'action_required'];
 
 function getJobAsMarkdownTableRow(checkRun) {
   return `| ${checkRun.name} | ${
@@ -63,16 +57,30 @@ module.exports = {
   verifyRequiredJobs: async ({github, context, checkName, requiredJobs}) => {
     const {owner, repo} = context.repo;
 
-    const result = await github.checks.listForRef({
+    let allCheck;
+    const allCheckRuns = await github.paginate(github.checks.listForRef, {
       owner,
       repo,
       ref: context.sha,
     });
 
-    const metaCheck = result.data.check_runs.find(({name}) => name === checkName);
+    console.log(`::group::Checks for ${context.sha}`);
+    console.log(JSON.stringify(allCheckRuns, null, 2));
+    console.log('::endgroup::');
+
+    const metaCheck = allCheckRuns.find(({name}) => name === checkName);
+
+    console.log(`::group::look for ${checkName}`);
+    console.log(JSON.stringify(metaCheck, null, 2));
+    console.log('::endgroup::');
+
+    console.log(`::group::required jobs`);
+    console.log(JSON.stringify(requiredJobs, null, 2));
+    console.log('::endgroup::');
+
     // Ignore this workflow's check run
     // XXX: See https://github.com/actions/runner/issues/852 for why we replace the hyphens like this
-    const checkRuns = result.data.check_runs.filter(
+    const checkRuns = allCheckRuns.filter(
       ({name}) => name !== context.job.replace('-', ' ') && name !== checkName
     );
     const missingCheckRunsSet = new Set(requiredJobs);
@@ -90,6 +98,7 @@ module.exports = {
     const requiredCheckRuns = checkRuns.filter(({name}) =>
       requiredJobs.find(job => name.startsWith(job))
     );
+
     const pendingChecks = requiredCheckRuns.filter(
       ({status, conclusion}) => status !== 'completed' || conclusion === null
     );
@@ -97,9 +106,12 @@ module.exports = {
     const failedChecks = requiredCheckRuns.filter(({conclusion}) =>
       FAILED_CONCLUSION_TYPES.includes(conclusion)
     );
+
     const passedChecks = requiredCheckRuns.filter(
-      ({conclusion}) => !FAILED_CONCLUSION_TYPES.includes(conclusion)
+      ({conclusion}) =>
+        !FAILED_CONCLUSION_TYPES.includes(conclusion) && conclusion !== null
     );
+
     const didPassAllChecks =
       failedChecks.length === 0 &&
       pendingChecks.length === 0 &&
