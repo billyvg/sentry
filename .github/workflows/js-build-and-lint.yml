@@ -147,7 +147,7 @@ jobs:
         if: github.ref == 'refs/heads/master' || steps.changes.outputs.frontend == 'true'
         run: yarn install --frozen-lockfile
 
-      - uses: getsentry/size-limit-action@v3
+      - uses: getsentry/size-limit-action@dev
         if: github.ref == 'refs/heads/master' || steps.changes.outputs.frontend == 'true'
         env:
           SENTRY_INSTRUMENTATION: 1
