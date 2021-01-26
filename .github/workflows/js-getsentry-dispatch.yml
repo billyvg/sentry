@@ -44,13 +44,29 @@ jobs:
         with:
           github-token: ${{ steps.getsentry.outputs.token }}
           script: |
+            // Check for getsentry PR dependency
+            const body = "${{ github.event.pull_request.body }}";
+            const matches = body.match(/requires\s+getsentry\/getsentry\/pull\/(\d+)/im);
+            let branch = '';
+
+            if (matches) {
+              const pr = await github.pulls.get({
+                owner: 'getsentry',
+                repo: 'getsentry',
+                pull_number: matches[1],
+              });
+              branch = pr.data.head.ref;
+            }
+
+            console.log(branch);
             github.actions.createWorkflowDispatch({
               owner: 'getsentry',
               repo: 'getsentry',
               workflow_id: 'js-build-and-lint.yml',
               ref: 'master',
               inputs: {
-                'skip': "${{ steps.changes.outputs.frontend != 'true' }}",
+                branch,
+                skip: "${{ steps.changes.outputs.frontend != 'true' }}",
                 'sentry-sha': '${{ github.event.pull_request.head.sha }}',
               }
             })
