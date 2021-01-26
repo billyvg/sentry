@@ -46,7 +46,8 @@ jobs:
           script: |
             // Check for getsentry PR dependency
             const body = context.payload.pull_request.body;
-            const matches = body && body.match(/requires\s+getsentry\/getsentry\/pull\/(\d+)/im);
+            // Logs convert the full PR URL into a shortened link, but we need to match against the full URL
+            const matches = body && body.match(/requires.*getsentry\/getsentry\/pull\/(\d+)/im);
             console.log(context.payload.pull_request);
             console.log(body);
             let branch = '';
