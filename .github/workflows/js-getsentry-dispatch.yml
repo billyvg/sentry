@@ -45,7 +45,8 @@ jobs:
           github-token: ${{ steps.getsentry.outputs.token }}
           script: |
             // Check for getsentry PR dependency
-            const body = context.payload.pull_request.body;
+            const body = context.payload.body;
+            console.log(context.payload)
             const matches = body.match(/requires\s+getsentry\/getsentry\/pull\/(\d+)/im);
             let branch = '';
 
