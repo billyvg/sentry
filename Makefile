@@ -62,6 +62,12 @@ run-acceptance:
 	pytest tests/acceptance --cov . --cov-report="xml:.artifacts/acceptance.coverage.xml" --junit-xml=".artifacts/acceptance.junit.xml"
 	@echo ""
 
+test-setup-frontend:
+	make build-platform-assets
+
+test-setup-db: create-db
+	sentry upgrade --noinput
+
 test-cli:
 	@echo "--> Testing CLI"
 	rm -rf test_cli
@@ -81,12 +87,7 @@ test-js-build: node-version-check
 
 test-js: node-version-check
 	@echo "--> Running JavaScript tests"
-	@yarn run test
-	@echo ""
-
-test-js-ci: node-version-check
-	@echo "--> Running CI JavaScript tests"
-	@yarn run test-ci
+	@JEST_TESTS=$(shell yarn -s jest --listTests --json); yarn run test-ci
 	@echo ""
 
 test-python:
@@ -160,5 +161,16 @@ lint-js:
 	bin/lint --js --parseable
 	@echo ""
 
+collectstatic: node-version-check
+	yarn webpack
+	sentry django collectstatic --noinput 1>/dev/null
+
+ci-test-js:
+	sentry init
+	make test-setup-frontend
+	NODE_ENV=production yarn build-css
+	make test-js
+
+ci-test-acceptance: test-setup-frontend test-setup-db test-acceptance
 
 .PHONY: build
