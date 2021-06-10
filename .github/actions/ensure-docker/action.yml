@@ -29,6 +29,7 @@ runs:
           --cache-from us.gcr.io/internal-sentry/sentry-ci:latest \
           -t us.gcr.io/internal-sentry/sentry-ci:latest \
           -t us.gcr.io/internal-sentry/sentry-ci:$GITHUB_SHA
+          -f test.Dockerfile
 
     - name: Publish docker image
       shell: bash
