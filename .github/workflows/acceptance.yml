@@ -71,7 +71,6 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   frontend:
-    if: false == true
     name: frontend tests
     needs: [ensure_docker]
     runs-on: ubuntu-20.04
