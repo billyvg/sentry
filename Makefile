@@ -166,7 +166,7 @@ collectstatic: node-version-check
 	sentry django collectstatic --noinput 1>/dev/null
 
 ci-test-js:
-	sentry init
+	# sentry init
 	make test-setup-frontend
 	NODE_ENV=production yarn build-css
 	make test-js
