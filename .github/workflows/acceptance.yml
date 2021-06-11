@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        instance: [0, 1]
+        instance: [0]
 
     env:
       VISUAL_HTML_ENABLE: 1
@@ -70,7 +70,6 @@ jobs:
           docker exec \
             -e CI_NODE_TOTAL=${{ strategy.job-total }} \
             -e CI_NODE_INDEX=${{ matrix.instance }} \
-            -e JEST_TESTS=$(yarn -s jest --listTests --json) \
             sentry-test bin/test-utils/run_tests make ci-test-js
 
       - name: Save HTML artifacts
