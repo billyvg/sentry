@@ -30,9 +30,17 @@ jobs:
           # export_default_credentials: true
           # service_account_key: ${{ secrets.GCR_SERVICE_ACCOUNT }}
 
-      - name: Login to GCR
+      - name: Decode GCR
+        id: creds
         run: |
-          echo '${{ secrets.GCR_SERVICE_ACCOUNT }}' | base64 -d | docker login gcr.io -u _json_key --password-stdin
+          echo "::set-output name=gcr::$(echo '${{ secrets.GCR_SERVICE_ACCOUNT }}' | base64 -d)"
+
+      - name: Login to GCR
+        uses: docker/login-action@v1
+        with:
+          registry: us.gcr.io
+          username: _json_key
+          password: ${{ steps.creds.outputs.gcr }}
 
       # - name: Ensure docker image
         # uses: ./.github/actions/ensure-docker
