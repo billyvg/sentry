@@ -23,27 +23,15 @@ jobs:
       - name: Checkout sentry
         uses: actions/checkout@v2
 
-      # - name: Install gcloud utils
-        # uses: google-github-actions/setup-gcloud@master
-        # with:
-          # version: '281.0.0'
-          # export_default_credentials: true
-          # service_account_key: ${{ secrets.GCR_SERVICE_ACCOUNT }}
-
-      - name: Decode GCR
-        id: creds
-        run: |
-          echo "::set-output name=gcr::$(echo '${{ secrets.GCR_SERVICE_ACCOUNT }}' | base64 -d)"
-
-      - name: Login to GCR
-        uses: docker/login-action@v1
+      - name: Install gcloud utils
+        uses: google-github-actions/setup-gcloud@master
         with:
-          registry: us.gcr.io
-          username: _json_key
-          password: ${{ steps.creds.outputs.gcr }}
+          version: '281.0.0'
+          export_default_credentials: true
+          service_account_key: ${{ secrets.GCR_SERVICE_ACCOUNT }}
 
-      # - name: Ensure docker image
-        # uses: ./.github/actions/ensure-docker
+      - name: Ensure docker image
+        uses: ./.github/actions/ensure-docker
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
