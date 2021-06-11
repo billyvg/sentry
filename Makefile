@@ -171,6 +171,9 @@ ci-test-js:
 	NODE_ENV=production yarn build-css
 	SENTRY_NO_VENV_CHECK=1 make test-js
 
-ci-test-acceptance: test-setup-frontend test-setup-db test-acceptance
+ci-test-acceptance:
+	make test-setup-frontend
+	SENTRY_NO_VENV_CHECK=1 make test-setup-db
+	SENTRY_NO_VENV_CHECK=1 make test-acceptance
 
 .PHONY: build
