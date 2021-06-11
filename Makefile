@@ -166,10 +166,10 @@ collectstatic: node-version-check
 	sentry django collectstatic --noinput 1>/dev/null
 
 ci-test-js:
-	# sentry init
+	sentry init # Need config to build platform assets
 	make test-setup-frontend
 	NODE_ENV=production yarn build-css
-	make test-js
+	SENTRY_NO_VENV_CHECK=1 make test-js
 
 ci-test-acceptance: test-setup-frontend test-setup-db test-acceptance
 
