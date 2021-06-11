@@ -72,12 +72,13 @@ jobs:
 
   frontend:
     name: frontend tests
+    if: false == true
     needs: [ensure_docker]
     runs-on: ubuntu-20.04
     timeout-minutes: 20
     strategy:
       matrix:
-        instance: [0]
+        instance: [0, 1]
 
     env:
       VISUAL_HTML_ENABLE: 1
@@ -115,15 +116,11 @@ jobs:
           name: jest-html
           path: .artifacts/visual-snapshots/jest
 
-      - name: Get CSS filename
-        id: css-manifest
-        run: echo "::set-output name=sentrycss::$(docker exec sentry-test jq -r '.["sentry.css"]' src/sentry/static/sentry/dist/manifest.json)"
-
       - name: Create Images from HTML
         uses: getsentry/action-html-to-image@main
         with:
           base-path: .artifacts/visual-snapshots/jest
-          css-path: ./src/sentry/static/sentry/dist/${{ steps.css-manifest.outputs.sentrycss }}
+          css-path: ./src/sentry/static/sentry/dist/sentry.css
 
       - name: Save snapshots
         if: always()
@@ -137,7 +134,6 @@ jobs:
 
   acceptance:
     name: acceptance
-    if: false == true
     runs-on: ubuntu-20.04
     timeout-minutes: 20
     needs: [ensure_docker]
