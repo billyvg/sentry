@@ -30,8 +30,8 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCR_SERVICE_ACCOUNT }}
 
-      - name: Ensure docker image
-        uses: ./.github/actions/ensure-docker
+      # - name: Ensure docker image
+        # uses: ./.github/actions/ensure-docker
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -45,9 +45,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-buildx-
 
-    - name: Get branch name (merge)
-      id: branch
-      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
+      - name: Get branch name (merge)
+        id: branch
+        run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
 
       # And make it available for the builds
       - name: Build and push
