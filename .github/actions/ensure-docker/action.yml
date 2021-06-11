@@ -9,9 +9,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Get branch name (merge)
-      shell: bash
-      run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+    # - name: Get branch name (merge)
+      # shell: bash
+      # run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
 
     - name: Configure docker
       shell: bash
