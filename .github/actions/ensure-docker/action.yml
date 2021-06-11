@@ -9,6 +9,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Get branch name (merge)
+      shell: bash
+      run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+
     - name: Configure docker
       shell: bash
       run: |
@@ -27,7 +31,10 @@ runs:
         docker pull us.gcr.io/internal-sentry/sentry-ci:latest || true
         docker build . \
           --cache-from us.gcr.io/internal-sentry/sentry-ci:latest \
+          --cache-from us.gcr.io/internal-sentry/sentry-ci:${{ env.BRANCH_NAME }} \
+          --cache-from us.gcr.io/internal-sentry/sentry-ci:$GITHUB_SHA \
           -t us.gcr.io/internal-sentry/sentry-ci:latest \
+          -t us.gcr.io/internal-sentry/sentry-ci:${{ env.BRANCH_NAME }} \
           -t us.gcr.io/internal-sentry/sentry-ci:$GITHUB_SHA \
           -f test.Dockerfile
 
@@ -36,6 +43,7 @@ runs:
       shell: bash
       run: |
         docker push us.gcr.io/internal-sentry/sentry-ci:$GITHUB_SHA
+        docker push us.gcr.io/internal-sentry/sentry-ci:${{ env.BRANCH_NAME }}
         docker push us.gcr.io/internal-sentry/sentry-ci:latest
 
     # - name: bump-sentry ${{ inputs.sentry_sha }}
