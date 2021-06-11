@@ -6,9 +6,8 @@ set -e
 cd "$(dirname "$0")/../.." || exit 1
 
 source bin/test-utils/build_config
-image_checksum="$(bin/test-utils/compute_checksum)"
 
-time docker pull "$GCR_URL/${IMAGE_NAME}:${image_checksum}"
+time docker pull "$GCR_URL/${IMAGE_NAME}:${GITHUB_SHA}"
 
 # NOTE: Any environment variables that need passed up from the build
 #       environment must be specified here.
