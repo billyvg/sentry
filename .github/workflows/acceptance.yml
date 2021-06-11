@@ -45,6 +45,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-buildx-
 
+    - name: Get branch name (merge)
+      id: branch
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
+
       # And make it available for the builds
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -52,7 +56,7 @@ jobs:
           context: .
           file: test.Dockerfile
           push: true
-          tags: us.gcr.io/internal-sentry/sentry-ci:latest,us.gcr.io/internal-sentry/sentry-ci:${{ env.BRANCH_NAME }},us.gcr.io/internal-sentry/sentry-ci:${{ github.sha }}
+          tags: us.gcr.io/internal-sentry/sentry-ci:latest,us.gcr.io/internal-sentry/sentry-ci:${{ steps.branch.outputs.branch }},us.gcr.io/internal-sentry/sentry-ci:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
