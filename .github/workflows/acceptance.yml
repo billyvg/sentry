@@ -46,8 +46,10 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
+          rm -rf .dockerignore
           docker pull ghcr.io/${{ github.repository }}:latest || true
           docker build . \
+            -f test.Dockerfile
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --cache-from ghcr.io/${{ github.repository }}:latest \
             -t ghcr.io/${{ github.repository }}:latest
