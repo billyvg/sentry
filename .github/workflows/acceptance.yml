@@ -23,52 +23,72 @@ jobs:
       - name: Checkout sentry
         uses: actions/checkout@v2
 
-      - name: Install gcloud utils
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          version: '281.0.0'
-          export_default_credentials: true
-          service_account_key: ${{ secrets.GCR_SERVICE_ACCOUNT }}
+      # - name: Install gcloud utils
+        # uses: google-github-actions/setup-gcloud@master
+        # with:
+          # version: '281.0.0'
+          # export_default_credentials: true
+          # service_account_key: ${{ secrets.GCR_SERVICE_ACCOUNT }}
 
-      - name: Ensure docker image
-        uses: ./.github/actions/ensure-docker
+      # - name: Ensure docker image
+        # uses: ./.github/actions/ensure-docker
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - run: docker --version
+
+      # - name: Set up Docker Buildx
+        # uses: docker/setup-buildx-action@v1
+
+      - name: Registry login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+      - name: Build docker image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          docker pull ghcr.io/${{ github.repository }}:latest || true
+          docker build . \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from ghcr.io/${{ github.repository }}:latest \
+            -t ghcr.io/${{ github.repository }}:latest
+
+      - name: Publish docker image
+        run: |
+          docker push ghcr.io/${{ github.repository }}:latest
 
       # So now you can use Actions' own caching!
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-buildx-
+      # - name: Cache Docker layers
+        # uses: actions/cache@v2
+        # with:
+          # path: /tmp/.buildx-cache
+          # key: ${{ runner.os }}-docker-buildx-${{ github.sha }}
+          # restore-keys: |
+            # ${{ runner.os }}-docker-buildx-
 
-      - name: Get branch name (merge)
-        id: branch
-        run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
+      # - name: Get branch name (merge)
+        # id: branch
+        # run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
 
-      # And make it available for the builds
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: test.Dockerfile
-          push: true
-          tags: us.gcr.io/internal-sentry/sentry-ci:latest,us.gcr.io/internal-sentry/sentry-ci:${{ steps.branch.outputs.branch }},us.gcr.io/internal-sentry/sentry-ci:${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      # # And make it available for the builds
+      # - name: Build and push
+        # uses: docker/build-push-action@v2
+        # with:
+          # context: .
+          # file: test.Dockerfile
+          # push: true
+          # tags: us.gcr.io/internal-sentry/sentry-ci:latest,us.gcr.io/internal-sentry/sentry-ci:${{ steps.branch.outputs.branch }},us.gcr.io/internal-sentry/sentry-ci:${{ github.sha }}
+          # cache-from: type=local,src=/tmp/.buildx-cache
+          # cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-        # This ugly bit is necessary if you don't want your cache to grow forever
-        # till it hits GitHub's limit of 5GB.
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        # # This ugly bit is necessary if you don't want your cache to grow forever
+        # # till it hits GitHub's limit of 5GB.
+        # # Temp fix
+        # # https://github.com/docker/build-push-action/issues/252
+        # # https://github.com/moby/buildkit/issues/1896
+      # - name: Move cache
+        # run: |
+          # rm -rf /tmp/.buildx-cache
+          # mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   frontend:
     name: frontend tests
@@ -134,6 +154,7 @@ jobs:
 
   acceptance:
     name: acceptance
+    if: false
     runs-on: ubuntu-20.04
     timeout-minutes: 20
     needs: [ensure_docker]
