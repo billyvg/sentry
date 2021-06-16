@@ -49,7 +49,7 @@ jobs:
           rm -rf .dockerignore
           docker pull ghcr.io/${{ github.repository }}:latest || true
           docker build . \
-            -f test.Dockerfile
+            -f test.Dockerfile \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --cache-from ghcr.io/${{ github.repository }}:latest \
             -t ghcr.io/${{ github.repository }}:latest
