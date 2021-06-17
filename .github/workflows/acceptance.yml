@@ -92,6 +92,13 @@ jobs:
           # rm -rf /tmp/.buildx-cache
           # mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
+  test:
+    name: failing test
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - run: exit 1
+
   frontend:
     name: frontend tests
     if: false == true
