@@ -93,7 +93,7 @@ jobs:
           # mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   test:
-    name: failing test
+    name: getsentry required checks
     runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
