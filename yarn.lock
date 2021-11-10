@@ -3431,10 +3431,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-date-range@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@types/react-date-range/-/react-date-range-1.1.5.tgz#ea25c4038e3d6b64b0f76dfe489a49673acab44b"
-  integrity sha512-6Qu8xZikZtjliZ3mY4gfHfZzF7EDAGJsSI59ZtqI8hNRHZtGRhShEJKvhXidqAEgPGMxhFKwlITjwxLgVtaJLw==
+"@types/react-date-range@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@types/react-date-range/-/react-date-range-1.4.1.tgz#f5b97aef79a66975b2f38913a2d3af56dd4920c7"
+  integrity sha512-ZZ6J9BLQKdhDwSUD4qTpEy8CysD4tItRXr5PgNf0AgzfbqtZz+Sp5vvDF2T2G79jxFJoS5wCfSXEwgwrXPs0XA==
   dependencies:
     "@types/react" "*"
     date-fns "^2.16.1"
