@@ -1,6 +1,9 @@
 name: 'pytest report handler'
 description: 'Save pytest report (junit) to GHA Artifacts'
 inputs:
+  workflow:
+    description: "The workflow filename to fetch artifacts from"
+    default: 
   action:
     description: "The action to take with the report (download / upload)"
     default: download
@@ -22,17 +25,22 @@ runs:
     - shell: bash
       run: mkdir .pytest_report
 
-    - name: Download report
+    - name: Get report artifact URL
       if: inputs.action != 'upload'
+      id: 'get-artifact'
       uses: ./.github/action-download-workflow-artifact
       with:
         branch: master
         artifact: pytest-report
         workflow: ${{ inputs.workflow }}
 
-    - shell: bash
+    - name: Download report artifact
+      shell: bash
       run: |
-        ls ${{ inputs.path }}
+        wget -v --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 -O pytest-report.zip '${{ steps.get-artifact.outputs.url }}'
+        mkdir -p .pytest-report || true
+        unzip -q -d .pytest-report pytest-report.zip
+        ls .pytest-report
 
     # Need to rename so if we have multiple test instances, the reports do not overwrite each other
     - name: Rename report

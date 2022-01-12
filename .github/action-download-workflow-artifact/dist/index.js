@@ -231,6 +231,7 @@ function run() {
                 artifactName,
             });
             core.debug(`Artifact url: ${resp === null || resp === void 0 ? void 0 : resp.artifact.url}`);
+            core.setOutput('url', resp === null || resp === void 0 ? void 0 : resp.artifact.url);
         }
         catch (error) {
             if (error instanceof Error) {
