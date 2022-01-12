@@ -1,9 +1,6 @@
 name: 'pytest report handler'
 description: 'Save pytest report (junit) to GHA Artifacts'
 inputs:
-  workflow:
-    description: "The workflow filename to fetch artifacts from"
-    default: 
   action:
     description: "The action to take with the report (download / upload)"
     default: download
@@ -22,9 +19,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - shell: bash
-      run: mkdir -p .pytest_report
-
     - name: Get report artifact URL
       if: inputs.action != 'upload'
       id: 'get-artifact'
@@ -32,9 +26,9 @@ runs:
       with:
         branch: master
         artifact: pytest-report
-        workflow: ${{ inputs.workflow }}
 
     - name: Download report artifact
+      if: inputs.action != 'upload'
       shell: bash
       run: |
         wget -v --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 -O pytest-report.zip '${{ steps.get-artifact.outputs.url }}'
