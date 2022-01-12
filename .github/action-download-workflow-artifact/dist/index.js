@@ -223,6 +223,8 @@ function run() {
             throw new Error('No artifact name provided');
         }
         try {
+            // Need to do a bunch of API calls to actually find artifacts for this
+            // workflow that have previously been run (e.g. on a different branch)
             const resp = yield (0, getArtifactsForBranchAndWorkflow_1.getArtifactsForBranchAndWorkflow)(octokit, {
                 owner,
                 repo,
@@ -230,8 +232,19 @@ function run() {
                 workflowName,
                 artifactName,
             });
+            if (!(resp === null || resp === void 0 ? void 0 : resp.artifact)) {
+                core.setFailed("Unable to find artifact");
+                return;
+            }
             core.debug(`Artifact url: ${resp === null || resp === void 0 ? void 0 : resp.artifact.url}`);
-            core.setOutput('url', resp === null || resp === void 0 ? void 0 : resp.artifact.url);
+            // Now need to get the artifact download URL
+            const artifact = yield octokit.actions.downloadArtifact({
+                owner,
+                repo,
+                artifact_id: resp.artifact.id,
+                archive_format: 'zip',
+            });
+            core.setOutput('url', artifact.url);
         }
         catch (error) {
             if (error instanceof Error) {
