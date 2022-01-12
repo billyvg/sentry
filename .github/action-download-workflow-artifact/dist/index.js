@@ -67,6 +67,7 @@ function getArtifactsForBranchAndWorkflow(octokit, { owner, repo, workflowName, 
                 repo,
             })), _d; _d = yield _c.next(), !_d.done;) {
                 const response = _d.value;
+                core.debug(JSON.stringify(response.data, null, 2));
                 const targetWorkflow = response.data.workflows.find(({ name }) => name === workflowName);
                 // If not found in responses, continue to search on next page
                 if (!targetWorkflow) {
