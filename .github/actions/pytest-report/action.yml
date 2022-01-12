@@ -23,7 +23,7 @@ runs:
   using: "composite"
   steps:
     - shell: bash
-      run: mkdir .pytest_report
+      run: mkdir -p .pytest_report
 
     - name: Get report artifact URL
       if: inputs.action != 'upload'
@@ -38,9 +38,9 @@ runs:
       shell: bash
       run: |
         wget -v --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 -O pytest-report.zip '${{ steps.get-artifact.outputs.url }}'
-        mkdir -p .pytest-report || true
-        unzip -q -d .pytest-report pytest-report.zip
-        ls .pytest-report
+        mkdir -p .pytest-reference-reports
+        unzip -q -d .pytest-reference-reports pytest-report.zip
+        ls .pytest-reference-reports
 
     # Need to rename so if we have multiple test instances, the reports do not overwrite each other
     - name: Rename report
