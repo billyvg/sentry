@@ -28,7 +28,6 @@ runs:
       with:
         branch: master
         artifact: pytest-report
-        path: ${{ inputs.path }}
 
     - shell: bash
       run: |
