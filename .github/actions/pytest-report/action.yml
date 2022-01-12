@@ -24,9 +24,10 @@ runs:
 
     - name: Download report
       if: inputs.action != 'upload'
-      uses: actions/download-artifact@v2
+      uses: ./github/action-download-workflow-artifact
       with:
-        name: pytest-report
+        branch: master
+        artifact: pytest-report
         path: ${{ inputs.path }}
 
     - shell: bash
