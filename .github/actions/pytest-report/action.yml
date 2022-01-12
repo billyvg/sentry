@@ -5,6 +5,10 @@ inputs:
     description: "The action to take with the report (download / upload)"
     default: download
     required: true
+  path:
+    description: "The download path for reports"
+    default: '.pytest-report'
+    required: true
   src:
     description: "The report to upload. This will need to be renamed"
     required: true
@@ -23,7 +27,11 @@ runs:
       uses: actions/download-artifact@v2
       with:
         name: pytest-report
-        path: .pytest_report
+        path: ${{ inputs.path }}
+
+    - shell: bash
+      run: |
+        ls ${{ inputs.path }}
 
     # Need to rename so if we have multiple test instances, the reports do not overwrite each other
     - name: Rename report
