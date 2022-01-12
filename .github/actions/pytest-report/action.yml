@@ -24,7 +24,7 @@ runs:
 
     - name: Download report
       if: inputs.action != 'upload'
-      uses: ./github/action-download-workflow-artifact
+      uses: ./.github/action-download-workflow-artifact
       with:
         branch: master
         artifact: pytest-report
