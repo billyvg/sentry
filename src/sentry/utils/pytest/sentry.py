@@ -300,13 +300,7 @@ def pytest_collection_modifyitems(config, items):
     total_group_durations = [0] * total_groups
     tests_by_groups = {}
 
-    # Using the junit xml, create a hash table of <test.casename + test.name, time>
-    #  for test, duration in test_durations:
-        #  group_index = find_smallest_group(total_group_durations)
-        #  tests_by_groups[test] = group_index
-
-
-    # {k: v for k, v in sorted(x.items(), key=lambda item: item[1])}
+    print(test_durations)
 
     for index, item in enumerate(items):
         # XXX: For some reason tests in `tests/acceptance` are not being
