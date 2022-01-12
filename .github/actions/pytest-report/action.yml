@@ -28,6 +28,7 @@ runs:
       with:
         branch: master
         artifact: pytest-report
+        workflow: ${{ inputs.workflow }}
 
     - shell: bash
       run: |

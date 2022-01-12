@@ -53,23 +53,54 @@ const PER_PAGE_LIMIT = 10;
  * This is a bit hacky since GitHub Actions currently does not directly
  * support downloading artifacts from other workflows
  */
-function getArtifactsForBranchAndWorkflow(octokit, { owner, repo, workflow_id, branch, commit, artifactName, }) {
-    var e_1, _a;
+function getArtifactsForBranchAndWorkflow(octokit, { owner, repo, workflowName, branch, commit, artifactName, }) {
+    var e_1, _a, e_2, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        core.startGroup(`getArtifactsForBranchAndWorkflow - workflow:"${workflow_id}",  branch:"${branch}"${commit ? `,  commit:"${commit}"` : ''}`);
+        core.startGroup(`getArtifactsForBranchAndWorkflow - workflow:"${workflowName}",  branch:"${branch}"${commit ? `,  commit:"${commit}"` : ''}`);
+        let repositoryWorkflow = null;
+        try {
+            //
+            // Find workflow id
+            //
+            for (var _c = __asyncValues(octokit.paginate.iterator(octokit.actions.listRepoWorkflows, {
+                owner,
+                repo,
+            })), _d; _d = yield _c.next(), !_d.done;) {
+                const response = _d.value;
+                const targetWorkflow = response.data.workflows.find(({ name }) => name === workflowName);
+                // If not found in responses, continue to search on next page
+                if (!targetWorkflow) {
+                    continue;
+                }
+                repositoryWorkflow = targetWorkflow;
+                break;
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) yield _a.call(_c);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (!repositoryWorkflow) {
+            core.error(`Unable to find workflow with name "${workflowName}" in the repository`);
+            core.endGroup();
+            return null;
+        }
+        const workflow_id = repositoryWorkflow.id;
         let currentPage = 0;
         let completedWorkflowRuns = [];
         try {
-            for (var _b = __asyncValues(octokit.paginate.iterator(octokit.actions.listWorkflowRuns, {
+            for (var _e = __asyncValues(octokit.paginate.iterator(octokit.actions.listWorkflowRuns, {
                 owner,
                 repo,
-                // Below is typed incorrectly, it needs to be a string but typed as number
                 workflow_id,
                 branch,
                 status: 'completed',
                 per_page: PER_PAGE_LIMIT,
-            })), _c; _c = yield _b.next(), !_c.done;) {
-                const response = _c.value;
+            })), _f; _f = yield _e.next(), !_f.done;) {
+                const response = _f.value;
                 if (!response.data.length) {
                     core.warning(`Workflow ${workflow_id} not found in branch ${branch}`);
                     core.endGroup();
@@ -96,12 +127,12 @@ function getArtifactsForBranchAndWorkflow(octokit, { owner, repo, workflow_id, b
                 currentPage++;
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
-                if (_c && !_c.done && (_a = _b.return)) yield _a.call(_b);
+                if (_f && !_f.done && (_b = _e.return)) yield _b.call(_e);
             }
-            finally { if (e_1) throw e_1.error; }
+            finally { if (e_2) throw e_2.error; }
         }
         // Search through workflow artifacts until we find a workflow run w/ artifact name that we are looking for
         for (const workflowRun of completedWorkflowRuns) {
@@ -186,9 +217,7 @@ function run() {
         //
         const { owner, repo } = github.context.repo;
         const branch = core.getInput('branch');
-        // const workflowInput = core.getInput('workflow') || process.env.GITHUB_WORKFLOW || '';
-        const workflow_id = process.env.GITHUB_RUN_ID || ""; //workflowInput.endsWith(".yml") ? workflowInput : `${workflowInput}.yml` ;
-        core.debug(workflow_id);
+        const workflowName = core.getInput('workflow') || process.env.GITHUB_WORKFLOW || '';
         const artifactName = core.getInput('artifact');
         if (!artifactName) {
             throw new Error('No artifact name provided');
@@ -198,7 +227,7 @@ function run() {
                 owner,
                 repo,
                 branch,
-                workflow_id,
+                workflowName,
                 artifactName,
             });
             core.debug(`Artifact url: ${resp === null || resp === void 0 ? void 0 : resp.artifact.url}`);
