@@ -186,7 +186,8 @@ function run() {
         //
         const { owner, repo } = github.context.repo;
         const branch = core.getInput('branch');
-        const workflow_id = core.getInput('workflow') || process.env.GITHUB_WORKFLOW || '';
+        const workflowInput = core.getInput('workflow') || process.env.GITHUB_WORKFLOW || '';
+        const workflow_id = workflowInput.endsWith(".yml") ? workflowInput : `${workflowInput}.yml`;
         const artifactName = core.getInput('artifact');
         if (!artifactName) {
             throw new Error('No artifact name provided');
