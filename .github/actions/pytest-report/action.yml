@@ -32,7 +32,6 @@ runs:
       shell: bash
       run: |
         wget -v --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 -O pytest-report.zip '${{ steps.get-artifact.outputs.url }}'
-        ${{ github.workspace }}
         mkdir -p ${{ github.workspace }}/.pytest-reference-reports
         unzip -q -d ${{ github.workspace }}/.pytest-reference-reports pytest-report.zip
         ls ${{ github.workspace }}/.pytest-reference-reports
