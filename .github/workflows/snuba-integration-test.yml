@@ -67,7 +67,7 @@ jobs:
         with:
           action: 'upload'
           src: .artifacts/snuba.junit.xml
-          dest: report-${{ matrix.instance }}.yml
+          dest: report-${{ matrix.instance }}.xml
 
       - name: Handle artifacts
         uses: ./.github/actions/artifacts
