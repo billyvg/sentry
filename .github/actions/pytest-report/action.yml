@@ -32,9 +32,11 @@ runs:
       shell: bash
       run: |
         wget -v --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 -O pytest-report.zip '${{ steps.get-artifact.outputs.url }}'
-        mkdir -p .pytest-reference-reports
-        unzip -q -d .pytest-reference-reports pytest-report.zip
-        ls .pytest-reference-reports
+        ${{ github.workspace }}
+        mkdir -p ${{ github.workspace }}/.pytest-reference-reports
+        unzip -q -d ${{ github.workspace }}/.pytest-reference-reports pytest-report.zip
+        ls ${{ github.workspace }}/.pytest-reference-reports
+        echo $(pwd)
 
     # Need to rename so if we have multiple test instances, the reports do not overwrite each other
     - name: Rename report
