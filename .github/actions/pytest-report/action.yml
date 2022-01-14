@@ -33,7 +33,7 @@ runs:
       uses: getsentry/action-download-workflow-artifact@v0
       with:
         branch: ${{ inputs.branch }}
-        artifact: ${{ input.artifact }}
+        artifact: ${{ inputs.artifact }}
         path: ${{ github.workspace }}/${{ inputs.path }}
 
     - name: Debug
