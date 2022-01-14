@@ -300,8 +300,6 @@ def pytest_collection_modifyitems(config, items):
     total_group_durations = [0] * total_groups
     tests_by_groups = {}
 
-    print(test_durations)
-
     for index, item in enumerate(items):
         # XXX: For some reason tests in `tests/acceptance` are not being
         # marked as snuba, so deselect test cases not a subclass of SnubaTestCase
