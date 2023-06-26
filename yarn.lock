@@ -12911,10 +12911,10 @@ puppeteer@^10.1.0:
     unbzip2-stream "1.3.3"
     ws "7.4.6"
 
-pyright@1.1.229:
-  version "1.1.229"
-  resolved "https://registry.yarnpkg.com/pyright/-/pyright-1.1.229.tgz#c48e4425b2fd7c13221d094693282ffa4bf9862a"
-  integrity sha512-eEmhg/8zJRf9a4EHkchxce/ihuL7FBd5Nk3O1Y3MRjUfrZwwyNNCgHYHIFi/OYajodlNhg3GJjSc6+1poZ3vvg==
+pyright@1.1.316:
+  version "1.1.316"
+  resolved "https://registry.yarnpkg.com/pyright/-/pyright-1.1.316.tgz#a3351e32ddc943a61f565f07c8dffc26fc5cdbf3"
+  integrity sha512-Pdb9AwOO07uNOuEVtwCThyDpB0wigWmLjeCw5vdPG7gVbVYYgY2iw64kBdwTu78NrO0igVKzmoRuApMoL6ZE0w==
 
 qr.js@0.0.0:
   version "0.0.0"
