@@ -164,7 +164,7 @@
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "eslint": "5.11.1",
     "eslint-config-sentry-app": "1.78.0",
-    "html-webpack-plugin": "^5.5.0",
+    "html-webpack-plugin": "^5.6.0",
     "jest": "27.5.1",
     "jest-canvas-mock": "^2.3.1",
     "jest-fetch-mock": "^3.0.3",
