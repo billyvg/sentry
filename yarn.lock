@@ -3441,6 +3441,13 @@
     core-js "^3.8.2"
     global "^4.4.0"
 
+"@storybook/client-logger@8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@storybook/client-logger/-/client-logger-8.0.2.tgz#26351288fa9209d90e9e43b039b9bccc7301782f"
+  integrity sha512-/GvjkCHk5LyiJ0EzoJ3kV+tqCGVarxYSnhD8ciszbWBUH4ZX104So+uZjwwGKCEZxh17HLppQa5bzOayGcdRDg==
+  dependencies:
+    "@storybook/global" "^5.0.0"
+
 "@storybook/components@6.3.13", "@storybook/components@^6.3.0":
   version "6.3.13"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.3.13.tgz#122eedef550b47abb810a141d08edb321bf7c13b"
@@ -3630,6 +3637,11 @@
   dependencies:
     lodash "^4.17.15"
 
+"@storybook/global@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@storybook/global/-/global-5.0.0.tgz#b793d34b94f572c1d7d9e0f44fac4e0dbc9572ed"
+  integrity sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==
+
 "@storybook/manager-webpack4@6.3.13":
   version "6.3.13"
   resolved "https://registry.yarnpkg.com/@storybook/manager-webpack4/-/manager-webpack4-6.3.13.tgz#d6139e9da5e310c633681ea85b0b02dda126c096"
@@ -3789,6 +3801,15 @@
     memoizerific "^1.11.3"
     qs "^6.10.0"
     ts-dedent "^2.0.0"
+
+"@storybook/router@8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@storybook/router/-/router-8.0.2.tgz#a9e8cae8c08586f54b409df507b070b22cebd998"
+  integrity sha512-6RB+BaiQ6asVWvBsED4I2fjEv8rfKQv0CBJxIq24B9PY2YcQzO6O6eBG6FMSlDvFPX+y9+Ut0dAseACwKuDaTg==
+  dependencies:
+    "@storybook/client-logger" "8.0.2"
+    memoizerific "^1.11.3"
+    qs "^6.10.0"
 
 "@storybook/semver@^7.3.2":
   version "7.3.2"
