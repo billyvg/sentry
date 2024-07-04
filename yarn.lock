@@ -10886,20 +10886,10 @@ loader-utils@2.0.0, loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
-loader-utils@^0.2.5:
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.17.tgz#f86e6374d43205a6e6c60e9196f17c0299bfb348"
-  integrity sha1-+G5jdNQyBabmxg6RlvF8Apm/s0g=
-  dependencies:
-    big.js "^3.1.3"
-    emojis-list "^2.0.0"
-    json5 "^0.5.0"
-    object-assign "^4.0.1"
-
-loader-utils@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.0.tgz#c579b5e34cb34b1a74edc6c1fb36bfa371d5a613"
-  integrity sha512-qH0WSMBtn/oHuwjy/NucEgbx5dbxxnxup9s4PVXJUDHZBQY+s0NWA9rJf53RBnQZxfch7euUui7hpoAPvALZdA==
+loader-utils@^1.4.0, loader-utils@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.2.tgz#29a957f3a63973883eb684f10ffd3d151fec01a3"
+  integrity sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==
   dependencies:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
@@ -12209,12 +12199,12 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pegjs-loader@^0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/pegjs-loader/-/pegjs-loader-0.5.6.tgz#173eef4b8e831316b88828e6b224bc8a786d01b8"
-  integrity sha512-0csqb/kXi5IrHeghL6BPlfhePtjNf3/0eDkuOultZNLsLYIEsh2JdhqkQPkGKJ+4hrSj8UknNSWfXZ3f3Hg4SQ==
+pegjs-loader@^0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/pegjs-loader/-/pegjs-loader-0.5.8.tgz#f40dbdb6d2678611dcde421c6e8aebca530ec4d7"
+  integrity sha512-FcqC07tFiDN5kEOVcYw0wSJcHu3d6YrT2sCJM5xkNwOeTAEkk/gFcxnkJH4D/ZNfUaBLQ7fbCUwMWLFfJ/06Mg==
   dependencies:
-    loader-utils "^0.2.5"
+    loader-utils "^1.4.2"
 
 pegjs@^0.10.0:
   version "0.10.0"
