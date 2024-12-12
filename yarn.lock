@@ -2805,6 +2805,20 @@
     "@react-types/overlays" "^3.5.1"
     "@react-types/shared" "^3.8.0"
 
+"@sentry-internal/browser-utils@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/browser-utils/-/browser-utils-8.44.0.tgz#3dbef0f13db52e63ac7fc02bd25e62f2c73d8827"
+  integrity sha512-kmSRdS1r2G3i0wTJJv69uMZqf/UwP3pVqrCq/0hvNaF4L5v+vrEOKTDZghDvCqutEqOFXI0V/l9SuDpgjElcZQ==
+  dependencies:
+    "@sentry/core" "8.44.0"
+
+"@sentry-internal/feedback@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-8.44.0.tgz#744351797bc2fe472f506be41de1c2638b87a3fa"
+  integrity sha512-x/7dilh9VRpsPRgx+1kT3Aulgj0X02GF+JfNeaFA2p786+2jBHTupGBu7AGiq1b1YRbDefkFXQxS1MaeqEEeOg==
+  dependencies:
+    "@sentry/core" "8.44.0"
+
 "@sentry-internal/global-search@^0.0.43":
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@sentry-internal/global-search/-/global-search-0.0.43.tgz#d390a8f78ea302e588e98e23cc5daf20f88254af"
@@ -2818,15 +2832,32 @@
     htmlparser2 "^4.1.0"
     title-case "^3.0.2"
 
-"@sentry/browser@6.18.1-beta.0":
-  version "6.18.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.18.1-beta.0.tgz#136d281f53558bbbb56ab0dac753702c5ffea770"
-  integrity sha512-v5eoSJVTBDJFA3PYgdMwcNpGtRylxuVPVSfTu2uYzmba/V9atSx3T8M6lAFxfqo9jJoEp9WWrsb30gG522GB7A==
+"@sentry-internal/replay-canvas@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-8.44.0.tgz#73f06885f46fd971b1a6172e448f5b2fd3df144e"
+  integrity sha512-hFCUHDekuJknzVCu5JnDkgUuOTJbwu82RR+VfbT+2lfIpZoT+gH44LzSH5bQUPXgmznRae4OYHblWAPue9U1Bw==
   dependencies:
-    "@sentry/core" "6.18.1-beta.0"
-    "@sentry/types" "6.18.1-beta.0"
-    "@sentry/utils" "6.18.1-beta.0"
-    tslib "^1.9.3"
+    "@sentry-internal/replay" "8.44.0"
+    "@sentry/core" "8.44.0"
+
+"@sentry-internal/replay@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay/-/replay-8.44.0.tgz#c5722c375cdea519a6fb784b917229e717e3dcb4"
+  integrity sha512-ZPX3Bg8ShuWZZzL5lw/fHjHdRhxxhhdzsVXq2jItg3CPvuO7oQofZsG4po6vgXTlj+fdtjUMQanj/6Ah4+jwsQ==
+  dependencies:
+    "@sentry-internal/browser-utils" "8.44.0"
+    "@sentry/core" "8.44.0"
+
+"@sentry/browser@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-8.44.0.tgz#940b7266ca30d3946db5d0d05a4ada14db9a8f39"
+  integrity sha512-s12u8rz2aYjiWPzoE7StL7fiCS2Z5p5BYmk9bhGDqDWyAPVEVZFUB3u/hwcPUF4yDAroWCbsNzTiBwr813zihg==
+  dependencies:
+    "@sentry-internal/browser-utils" "8.44.0"
+    "@sentry-internal/feedback" "8.44.0"
+    "@sentry-internal/replay" "8.44.0"
+    "@sentry-internal/replay-canvas" "8.44.0"
+    "@sentry/core" "8.44.0"
 
 "@sentry/core@6.18.1-beta.0":
   version "6.18.1-beta.0"
@@ -2838,6 +2869,11 @@
     "@sentry/types" "6.18.1-beta.0"
     "@sentry/utils" "6.18.1-beta.0"
     tslib "^1.9.3"
+
+"@sentry/core@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-8.44.0.tgz#3b6da46df7dfb638dcb35b9823300273a1fd7477"
+  integrity sha512-C43eW9Mr1WGpxCeI6pXUl7TeTwR2TwWhuU8wHx2s5eoATDQwbjz9l+JXXjVJf5YXXEwNOZL2WAx/f0diLA5rTQ==
 
 "@sentry/hub@6.18.1-beta.0":
   version "6.18.1-beta.0"
@@ -2881,17 +2917,14 @@
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/react@6.18.1-beta.0":
-  version "6.18.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-6.18.1-beta.0.tgz#f2634880ea332b7aabf476a11dbb75fe222ad7f2"
-  integrity sha512-NMXJCEWCG4ZvmYgnWQIKAq9AIov3+2pCVNBFCNHbQ/A9i93QQM9cVAMeZLRqddoJ33NyXzjpIOK7VkfVvS7wLQ==
+"@sentry/react@8.44.0":
+  version "8.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-8.44.0.tgz#f2c1f453d83d27777a4f04aab041c6ef0615d0d6"
+  integrity sha512-LGqkLC+Sf1iEMmlHTBtCpEoZgwkeXjDDjc1rQjCq/5PG04jrCgXBTTAP7UqoetrYhQLNxtrgkGXmU4CE2BnIBw==
   dependencies:
-    "@sentry/browser" "6.18.1-beta.0"
-    "@sentry/minimal" "6.18.1-beta.0"
-    "@sentry/types" "6.18.1-beta.0"
-    "@sentry/utils" "6.18.1-beta.0"
+    "@sentry/browser" "8.44.0"
+    "@sentry/core" "8.44.0"
     hoist-non-react-statics "^3.3.2"
-    tslib "^1.9.3"
 
 "@sentry/release-parser@^1.3.0":
   version "1.3.0"
