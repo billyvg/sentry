@@ -4353,10 +4353,10 @@
     "@types/react" "*"
     date-fns "^2.16.1"
 
-"@types/react-document-title@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react-document-title/-/react-document-title-2.0.5.tgz#5093e25420c918066bb94efff1cb08a894289cce"
-  integrity sha512-EZ8uj09zBkqkKms2i0OPVYBb4iOLg+GWG1GegDOIDurQqJz+dc2ZMtJU+bgxmm01BjqHYq38XRj0/eC1kChLIw==
+"@types/react-document-title@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@types/react-document-title/-/react-document-title-2.0.10.tgz#f9c4563744b735750d84519ba1bc7099e1b2d1d0"
+  integrity sha512-a5RYXFccVqVhc429yXUn9zjJvaQwdx3Kueb8v8pEymUyExHoatHv0iS8BlOE3YuS+csA2pHbL2Hatnp7QEtLxQ==
   dependencies:
     "@types/react" "*"
 
