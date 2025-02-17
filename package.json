@@ -69,7 +69,7 @@
     "compression-webpack-plugin": "7.0.0",
     "copy-text-to-clipboard": "2.2.0",
     "core-js": "^3.21.1",
-    "crypto-browserify": "^3.12.0",
+    "crypto-browserify": "^3.12.1",
     "crypto-js": "4.0.0",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.4.1",
