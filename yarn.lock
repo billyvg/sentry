@@ -6047,10 +6047,10 @@ case-sensitive-paths-webpack-plugin@^2.3.0:
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
 
-cbor-web@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-8.1.0.tgz#c1148e91ca6bfc0f5c07c1df164854596e2e33d6"
-  integrity sha512-2hWHHMVrfffgoEmsAUh8vCxHoLa1vgodtC73+C5cSarkJlwTapnqAzcHINlP6Ej0DXuP4OmmJ9LF+JaNM5Lj/g==
+cbor-web@^10.0.11:
+  version "10.0.11"
+  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-10.0.11.tgz#e78eccab36da9fb9fca94394cbadb60eaa5a9d0d"
+  integrity sha512-bhhIZD2ycDtBWfZsuxri1t2djzzpQAqBpW2sxGWHElTZgaf3kTN3eKNIko0wkxv2OZ3Jl2J2ykhsnNMex8gxzw==
 
 ccount@^1.0.0:
   version "1.0.4"
