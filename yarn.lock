@@ -2805,6 +2805,20 @@
     "@react-types/overlays" "^3.5.1"
     "@react-types/shared" "^3.8.0"
 
+"@sentry-internal/browser-utils@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/browser-utils/-/browser-utils-10.29.0.tgz#37cdf31e273c60417570f358a1198ff88baca93b"
+  integrity sha512-M3kycMY6f3KY9a8jDYac+yG0E3ZgWVWSxlOEC5MhYyX+g7mqxkwrb3LFQyuxSm/m+CCgMTCaPOOaB2twXP6EQg==
+  dependencies:
+    "@sentry/core" "10.29.0"
+
+"@sentry-internal/feedback@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-10.29.0.tgz#c63236f3a8adb15f691f8ab4a429a190ed60a572"
+  integrity sha512-Y7IRsNeS99cEONu1mZWZc3HvbjNnu59Hgymm0swFFKbdgbCgdT6l85kn2oLsuq4Ew8Dw/pL/Sgpwsl9UgYFpUg==
+  dependencies:
+    "@sentry/core" "10.29.0"
+
 "@sentry-internal/global-search@^0.0.43":
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@sentry-internal/global-search/-/global-search-0.0.43.tgz#d390a8f78ea302e588e98e23cc5daf20f88254af"
@@ -2818,15 +2832,37 @@
     htmlparser2 "^4.1.0"
     title-case "^3.0.2"
 
-"@sentry/browser@6.18.1-beta.0":
-  version "6.18.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.18.1-beta.0.tgz#136d281f53558bbbb56ab0dac753702c5ffea770"
-  integrity sha512-v5eoSJVTBDJFA3PYgdMwcNpGtRylxuVPVSfTu2uYzmba/V9atSx3T8M6lAFxfqo9jJoEp9WWrsb30gG522GB7A==
+"@sentry-internal/replay-canvas@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-10.29.0.tgz#f3fd56f40ef8b9c7b7d38e591c2e7f1b098d0ff2"
+  integrity sha512-typY4JrpAQQGPuSyd/BD8+nNCbvTV2UVvKzr+iKgI0m1qc4Dz8tHZ4Nfais2Z8eYn/pL1kqVQN5ERTmJoYFdIw==
   dependencies:
-    "@sentry/core" "6.18.1-beta.0"
-    "@sentry/types" "6.18.1-beta.0"
-    "@sentry/utils" "6.18.1-beta.0"
-    tslib "^1.9.3"
+    "@sentry-internal/replay" "10.29.0"
+    "@sentry/core" "10.29.0"
+
+"@sentry-internal/replay@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay/-/replay-10.29.0.tgz#f21e6933f47ddbab2c303a462d9b5317794b20e0"
+  integrity sha512-45NVw9PwB9TQ8z+xJ6G6Za+wmQ1RTA35heBSzR6U4bknj8LmA04k2iwnobvxCBEQXeLfcJEO1vFgagMoqMZMBw==
+  dependencies:
+    "@sentry-internal/browser-utils" "10.29.0"
+    "@sentry/core" "10.29.0"
+
+"@sentry/browser@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-10.29.0.tgz#4d7d7289960526fa2fb43d1b3d750d357d47139c"
+  integrity sha512-XdbyIR6F4qoR9Z1JCWTgunVcTJjS9p2Th+v4wYs4ME+ZdLC4tuKKmRgYg3YdSIWCn1CBfIgdI6wqETSf7H6Njw==
+  dependencies:
+    "@sentry-internal/browser-utils" "10.29.0"
+    "@sentry-internal/feedback" "10.29.0"
+    "@sentry-internal/replay" "10.29.0"
+    "@sentry-internal/replay-canvas" "10.29.0"
+    "@sentry/core" "10.29.0"
+
+"@sentry/core@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-10.29.0.tgz#8783db0969224f48ea46e3c3212289d5dbd6ef38"
+  integrity sha512-olQ2DU9dA/Bwsz3PtA9KNXRMqBWRQSkPw+MxwWEoU1K1qtiM9L0j6lbEFb5iSY3d7WYD5MB+1d5COugjSBrHtw==
 
 "@sentry/core@6.18.1-beta.0":
   version "6.18.1-beta.0"
@@ -2881,17 +2917,14 @@
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/react@6.18.1-beta.0":
-  version "6.18.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-6.18.1-beta.0.tgz#f2634880ea332b7aabf476a11dbb75fe222ad7f2"
-  integrity sha512-NMXJCEWCG4ZvmYgnWQIKAq9AIov3+2pCVNBFCNHbQ/A9i93QQM9cVAMeZLRqddoJ33NyXzjpIOK7VkfVvS7wLQ==
+"@sentry/react@10.29.0":
+  version "10.29.0"
+  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-10.29.0.tgz#ecd53f4e82d3067fb1ca644adf59eb8ee910cf08"
+  integrity sha512-YGaEUXubzil7qssD1koh1fyt0aS8tHB61/6+oNShJ6xZPg03AB42bNMr2/y8fIFx36kb3MiCA5sFoH/ubF0LnQ==
   dependencies:
-    "@sentry/browser" "6.18.1-beta.0"
-    "@sentry/minimal" "6.18.1-beta.0"
-    "@sentry/types" "6.18.1-beta.0"
-    "@sentry/utils" "6.18.1-beta.0"
+    "@sentry/browser" "10.29.0"
+    "@sentry/core" "10.29.0"
     hoist-non-react-statics "^3.3.2"
-    tslib "^1.9.3"
 
 "@sentry/release-parser@^1.3.0":
   version "1.3.0"
